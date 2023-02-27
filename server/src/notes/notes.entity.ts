@@ -1,9 +1,9 @@
 import {Column, DataType, Model, Table} from 'sequelize-typescript';
 
 interface NoteCreationAttrs {
-    // text: string;
-    // filmId: number;
-    // userId: number;
+    queueNumber: number;
+    color: string;
+    date: string;
 }
 
 @Table({
@@ -35,13 +35,13 @@ export class Notes extends Model<Notes, NoteCreationAttrs> {
         type: DataType.ARRAY(DataType.STRING),
         allowNull: true
     })
-    tags: string;
+    tags: string[];
 
     @Column({
         type: DataType.INTEGER,
         allowNull: true
     })
-    queueNumber: string;
+    queueNumber: number;
 
     @Column({
         type: DataType.STRING,
