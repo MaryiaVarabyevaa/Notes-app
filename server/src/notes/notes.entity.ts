@@ -39,19 +39,19 @@ export class Notes extends Model<Notes, NoteCreationAttrs> {
 
     @Column({
         type: DataType.INTEGER,
-        allowNull: true
+        allowNull: false
     })
     queueNumber: number;
 
     @Column({
         type: DataType.STRING,
-        allowNull: true
+        allowNull: false
     })
     color: string;
 
     @Column({
         type: DataType.STRING,
-        allowNull: true
+        allowNull: false
     })
     date: string;
 }
