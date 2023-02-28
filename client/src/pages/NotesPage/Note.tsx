@@ -1,12 +1,14 @@
 import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
+import { INote } from '../../types/note';
 
-const Note = () => {
+const Note = ({ ...note }: INote) => {
+  const { id, color, date, text, header, tags, queueNumber } = note;
   return (
     <Box sx={{
       width: '360px',
       height: '600px',
-      bgcolor: '#FFAFA3',
+      bgcolor: `${color}`,
       padding: '8px 15px 0 14px',
       display: 'flex',
       flexDirection: 'column',
@@ -21,7 +23,9 @@ const Note = () => {
           letterSpacing: '0.05em',
           color: '#010101',
           fontFamily: 'inherit',
-        }}>Добро пожаловать!</Typography>
+        }}>
+          { header }
+        </Typography>
         <Typography variant="body2" sx={{
           fontWeight: '400',
           fontSize: '16px',
@@ -30,15 +34,7 @@ const Note = () => {
           color: '#010101',
           fontFamily: 'inherit',
         }}>
-                Записать — легко!
-
-
-                Добавляйте заметки — вводите `#хэштеги`, чтобы добавить теги вашим записям.
-                И они автоматически добавятся к
-                заметке, а в описании соответствующие тегам слова будут выделены цветом! При этом в описании
-                заметки знак `#` будет удален без вашего участия, останется только слово
-                соответствующее введенному хештегу!
-                It`s awesomenotes!
+          { text }
         </Typography>
       </Stack>
       <Stack>
@@ -53,18 +49,24 @@ const Note = () => {
           fontFamily: 'inherit',
         }}
         >
-            2023.01.13
+          { date }
         </Typography>
-        <Typography sx={{
-          fontWeight: '300',
-          fontSize: '14px',
-          lineHeight: '21px',
-          letterSpacing: '0.05em',
-          color: '#1B18B4',
-          fontFamily: 'inherit',
-        }}>
-            #хэштеги #awesomenotes
-        </Typography>
+        <Box sx={{ display: 'flex', gap: '5px' }}>
+          {
+            tags.map((tag, index) => {
+              return <Typography key={index} sx={{
+                fontWeight: '300',
+                fontSize: '14px',
+                lineHeight: '21px',
+                letterSpacing: '0.05em',
+                color: '#1B18B4',
+                fontFamily: 'inherit',
+              }}>
+                { tag }
+              </Typography>;
+            })
+          }
+        </Box>
       </Stack>
     </Box>
   );
