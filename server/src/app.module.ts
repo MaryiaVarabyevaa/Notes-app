@@ -2,8 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { NotesModule } from './notes/notes.module';
-import { Notes } from "./notes/notes.entity";
-
+import { Notes } from './notes/notes.entity';
 
 @Module({
   imports: [
@@ -21,7 +20,7 @@ import { Notes } from "./notes/notes.entity";
       autoLoadModels: true,
       synchronize: true,
     }),
-    NotesModule
+    NotesModule,
   ],
 })
 export class AppModule {}
