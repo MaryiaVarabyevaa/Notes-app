@@ -1,20 +1,24 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { NotesService } from './notes.service';
+import { CreateNoteDto } from './dto/create-note.dto';
+import { UpdateNoteDto } from './dto/update-note.dto';
 
 @Controller('notes')
 export class NotesController {
+  constructor(private notesService: NotesService) {}
   @Get()
-  getAllNotes() {
-    return 'Get all notes';
+  getNotes() {
+    return this.notesService.getNotes();
   }
 
-  @Post()
-  addNote() {
-    return '';
+  @Post('create')
+  addNote(@Body() noteDto: CreateNoteDto) {
+    return this.notesService.create(noteDto);
   }
 
-  @Put()
-  updateNoteInfo() {
-    return '';
+  @Put('update')
+  updateNoteInfo(@Body() noteDto: UpdateNoteDto) {
+    return this.notesService.update(noteDto);
   }
 
   @Delete()

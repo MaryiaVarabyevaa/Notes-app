@@ -22,18 +22,21 @@ export class Notes extends Model<Notes, NoteCreationAttrs> {
   @Column({
     type: DataType.STRING,
     allowNull: true,
+    defaultValue: '',
   })
   header: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.STRING(1500),
     allowNull: true,
+    defaultValue: '',
   })
   text: string;
 
   @Column({
     type: DataType.ARRAY(DataType.STRING),
     allowNull: true,
+    defaultValue: [],
   })
   tags: string[];
 
