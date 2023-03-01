@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, Put, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Request,
+} from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
@@ -25,5 +33,10 @@ export class NotesController {
   @Delete('delete')
   deleteNote(@Request() req) {
     return this.notesService.delete(req.body.id);
+  }
+
+  @Put('update-order')
+  updateOrder(@Request() req) {
+    return this.notesService.updateOrder(req.body.id, req.body.queueNumber);
   }
 }

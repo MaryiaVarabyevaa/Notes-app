@@ -32,6 +32,15 @@ export class NotesService {
     );
     return updatedNote;
   }
+  async updateOrder(id: number, queueNumber: number) {
+    const updatedNote = await this.noteRepository.update(
+      { queueNumber },
+      {
+        where: { id },
+      },
+    );
+    return updatedNote;
+  }
   async getNotes(): Promise<Notes[]> {
     const notes = await this.noteRepository.findAll({
       where: {
