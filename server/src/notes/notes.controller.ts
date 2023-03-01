@@ -13,7 +13,7 @@ export class NotesController {
   }
 
   @Post('create')
-  addNote(@Body() noteDto: CreateNoteDto): Promise<Notes> {
+  addNote(@Body() noteDto: CreateNoteDto): Promise<number> {
     return this.notesService.create(noteDto);
   }
 

@@ -8,9 +8,9 @@ import { UpdateNoteDto } from './dto/update-note.dto';
 export class NotesService {
   constructor(@InjectModel(Notes) private noteRepository: typeof Notes) {}
 
-  async create(noteDto: CreateNoteDto) {
+  async create(noteDto: CreateNoteDto): Promise<number> {
     const note = await this.noteRepository.create(noteDto);
-    return note;
+    return note.id;
   }
   async update(noteDto: UpdateNoteDto) {
     const { id, ...rest } = noteDto;
@@ -32,7 +32,7 @@ export class NotesService {
     );
     return updatedNote;
   }
-  async getNotes() {
+  async getNotes(): Promise<Notes[]> {
     const notes = await this.noteRepository.findAll({
       where: {
         deletedAt: null,
