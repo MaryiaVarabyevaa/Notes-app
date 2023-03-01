@@ -27,6 +27,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/sequelize": "^9.0.0",
     "class-validator": "^0.14.0",
+    "cors": "^2.8.5",
     "module-name": "^0.0.1-security",
     "pg": "^8.9.0",
     "postgres": "^3.3.3",

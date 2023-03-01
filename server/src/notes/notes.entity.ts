@@ -8,7 +8,8 @@ interface NoteCreationAttrs {
 
 @Table({
   tableName: 'notes',
-  timestamps: false,
+  timestamps: true,
+  paranoid: true,
 })
 export class Notes extends Model<Notes, NoteCreationAttrs> {
   @Column({

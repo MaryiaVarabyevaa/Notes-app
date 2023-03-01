@@ -33,7 +33,21 @@ export class NotesService {
     return updatedNote;
   }
   async getNotes() {
-    const notes = await this.noteRepository.findAll();
+    const notes = await this.noteRepository.findAll({
+      where: {
+        deletedAt: null,
+      },
+      order: [['queueNumber', 'ASC']],
+      attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+    });
     return notes;
+  }
+  async delete(id: number) {
+    const deletedNote = await this.noteRepository.destroy({
+      where: {
+        id,
+      },
+    });
+    return deletedNote;
   }
 }

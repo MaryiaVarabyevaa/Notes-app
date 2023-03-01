@@ -1,18 +1,19 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, Request } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
+import { Notes } from './notes.entity';
 
 @Controller('notes')
 export class NotesController {
   constructor(private notesService: NotesService) {}
   @Get()
-  getNotes() {
+  getNotes(): Promise<Notes[]> {
     return this.notesService.getNotes();
   }
 
   @Post('create')
-  addNote(@Body() noteDto: CreateNoteDto) {
+  addNote(@Body() noteDto: CreateNoteDto): Promise<Notes> {
     return this.notesService.create(noteDto);
   }
 
@@ -21,8 +22,8 @@ export class NotesController {
     return this.notesService.update(noteDto);
   }
 
-  @Delete()
-  deleteNote() {
-    return '';
+  @Delete('delete')
+  deleteNote(@Request() req) {
+    return this.notesService.delete(req.body.id);
   }
 }
