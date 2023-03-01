@@ -4,7 +4,8 @@ import { INote } from '../../types/note';
 import { font } from '../../helpers/font';
 
 const Note = ({ ...note }: INote) => {
-  const { id, color, date, text, header, tags } = note;
+  const { id, date, text, header, tags } = note;
+
   return (
     <>
       <Stack spacing={1.5}>
