@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ILink } from '../../types/navBar';
+import { font } from '../../helpers/font';
 
 const NavLink = ({ text, link }: ILink) => {
 
@@ -8,21 +9,8 @@ const NavLink = ({ text, link }: ILink) => {
     <Link
       to={link}
       style={{
-        color: '#858585',
-        fontWeight: '700',
-        fontSize: '24px',
-        lineHeight: '33px',
-        letterSpacing: '0.05em',
+        ...font('700', '24px', '33px', '0.05em', '#858585'),
         textDecoration: 'none',
-      }}
-      onClick={(e) => {
-        // const elem = e.target as HTMLElement;
-        // elem.classList.toggle("clicked");
-        // if (elem.classList.contains("clicked")) {
-        //     elem.style.color = "#010101"
-        // } else {
-        //     elem.style.color = '#858585'
-        // }
       }}
     >
       { text }

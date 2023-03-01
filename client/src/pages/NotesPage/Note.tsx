@@ -1,52 +1,29 @@
 import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import { INote } from '../../types/note';
+import { font } from '../../helpers/font';
 
 const Note = ({ ...note }: INote) => {
-  const { id, color, date, text, header, tags, queueNumber } = note;
+  const { id, color, date, text, header, tags } = note;
   return (
-    <Box sx={{
-      width: '360px',
-      height: '600px',
-      bgcolor: `${color}`,
-      padding: '8px 15px 0 14px',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      fontFamily: 'inherit',
-    }}>
+    <>
       <Stack spacing={1.5}>
         <Typography variant="h3" sx={{
-          fontWeight:' 500',
-          fontSize: '24px',
-          lineHeight: '36px',
-          letterSpacing: '0.05em',
-          color: '#010101',
-          fontFamily: 'inherit',
+          ...font('500', '24px', '36px', '0.05em', '#010101', 'inherit'),
         }}>
           { header }
         </Typography>
         <Typography variant="body2" sx={{
-          fontWeight: '400',
-          fontSize: '16px',
-          lineHeight: '24px',
-          letterSpacing: '0.05em',
-          color: '#010101',
-          fontFamily: 'inherit',
+          ...font('400', '16px', '24px', '0.05em', '#010101','inherit'),
         }}>
           { text }
         </Typography>
       </Stack>
       <Stack>
         <Typography sx={{
+          ...font('400', '14px', '21px', '0.05em', '#858585','inherit'),
           alignSelf: 'end',
-          fontWeight: '400',
-          fontSize: '14px',
-          lineHeight: '21px',
           textAlign: 'right',
-          letterSpacing: '0.05em',
-          color: '#858585',
-          fontFamily: 'inherit',
         }}
         >
           { date }
@@ -55,12 +32,7 @@ const Note = ({ ...note }: INote) => {
           {
             tags.map((tag, index) => {
               return <Typography key={index} sx={{
-                fontWeight: '300',
-                fontSize: '14px',
-                lineHeight: '21px',
-                letterSpacing: '0.05em',
-                color: '#1B18B4',
-                fontFamily: 'inherit',
+                ...font('300', '14px', '21px', '0.05em', '#1B18B4','inherit'),
               }}>
                 { tag }
               </Typography>;
@@ -68,7 +40,7 @@ const Note = ({ ...note }: INote) => {
           }
         </Box>
       </Stack>
-    </Box>
+    </>
   );
 };
 

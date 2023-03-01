@@ -14,7 +14,6 @@
         "quotes": ["error", "single"],
         "jsx-quotes": ["error", "prefer-double"],
         "indent": ["warn", 2],
-        "max-len": ["error", {"code":  120}],
         "comma-dangle": ["error", "always-multiline"],
         "semi": ["warn", "always"],
         "object-curly-spacing": ["error", "always"],

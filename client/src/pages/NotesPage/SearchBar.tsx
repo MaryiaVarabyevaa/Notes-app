@@ -1,8 +1,9 @@
 import React from 'react';
-import { InputAdornment, makeStyles, TextField } from '@mui/material';
+import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 const SearchBar = () => {
+
   return (
     <TextField
       variant="outlined"
