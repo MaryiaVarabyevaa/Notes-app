@@ -36,7 +36,7 @@ export class NotesController {
   }
 
   @Put('update-order')
-  updateOrder(@Request() req) {
-    return this.notesService.updateOrder(req.body.id, req.body.queueNumber);
+  updateOrder(@Body() noteDto: UpdateNoteDto[]): Promise<void> {
+    return this.notesService.updateOrder(noteDto);
   }
 }
