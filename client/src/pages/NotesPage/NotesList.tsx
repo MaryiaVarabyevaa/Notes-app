@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { addNote, getNotes, updateOrder } from '../../http/noteAPI';
+import { addNote, getNotes, updateQueueNumber } from '../../http/noteAPI';
 import { INote } from '../../types/note';
 import { flex } from '../../helpers/flex';
 import { size } from '../../helpers/size';
@@ -19,21 +19,18 @@ const NotesList = () => {
     return notes;
   };
 
-  const handleAddBtnClick = async(): Promise<INote> => {
+  const handleAddBtnClick = async(): Promise<void> => {
     const date = getDate();
-    const order = notes.length === 0? 1 : notes?.at(-1)?.queueNumber as number + 1;
+    const queueNumber = notes.length === 0? 1 : notes?.at(-1)?.queueNumber as number + 1;
     const color = notes.length === 0? '' : notes?.at(-1)?.color as string;
     const newNote = await addNote({
-      queueNumber: order,
+      queueNumber,
       date,
       color: getColor(color),
     });
     const newNotes = [ ...notes, newNote ];
     setNotes(newNotes);
-    return newNote;
   };
-
-
 
   useEffect(() => {
     getAllNotes().then((notes) => {
@@ -61,7 +58,7 @@ const NotesList = () => {
       }
       return item;
     }) as INote[];
-    await updateOrder(notesList);
+    await updateQueueNumber(notesList);
     setNotes(notesList);
   };
 
@@ -69,22 +66,27 @@ const NotesList = () => {
 
   return (
     <Box sx={{ display: 'flex', gap: '30px' }}>
-      {
-        notes.length !== 0 && notes.sort(sortFunc).map((note) => (<Box
-          onDragStart={(e) => dragStartHandle(e, note)}
-          onDragOver={(e) => dragOverHandler(e)}
-          onDrop={(e) => dropHandler(e, note)}
-          draggable={true}
-          key={note.id} sx={{
-            bgcolor: `${note.color}`,
-            padding: '8px 15px 0 14px',
-            ...size('360px', '600px'),
-            ...flex('column', 'space-between'),
-            cursor: 'grab',
-          }}>
-          <Note { ...note } />
-        </Box>))
-      }
+      <Box sx={{ width: '1140px', display: 'flex', gap: '30px' }}>
+        {
+          notes.length !== 0 && notes.sort(sortFunc).map((note) => (<Box
+            onDragStart={(e) => dragStartHandle(e, note)}
+            onDragOver={(e) => dragOverHandler(e)}
+            onDrop={(e) => dropHandler(e, note)}
+            draggable={true}
+            key={note.id} sx={{
+              bgcolor: `${note.color}`,
+              padding: '8px 15px 0 14px',
+              ...flex('column', 'space-between'),
+              // ...size('360px', '600px'),
+              // flex: 'flex: 0 0 360px',
+              // overflow: 'hidden', whiteSpace: 'nowrap',
+              // cursor: 'grab',
+              // height: '600px',
+            }}>
+            <Note { ...note } />
+          </Box>))
+        }
+      </Box>
       <Box sx={{
         border: '5px dashed #85E0A3',
         ...size('360px', '600px'),

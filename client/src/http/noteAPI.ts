@@ -12,6 +12,6 @@ export const addNote = async (note: INoteCreate): Promise<INote> => {
   return data;
 };
 
-export const updateOrder = async (notes: INote[]): Promise<void> => {
+export const updateQueueNumber = async (notes: INote[]): Promise<void> => {
   const { data } = await $host.put('notes/update-order', notes);
 };
