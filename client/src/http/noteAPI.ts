@@ -7,7 +7,7 @@ export const getNotes = async (): Promise<INote[]> => {
   return data;
 };
 
-export const addNote = async (note: INoteCreate): Promise<number> => {
+export const addNote = async (note: INoteCreate): Promise<INote> => {
   const { data } = await $host.post('notes/create', note);
   return data;
 };

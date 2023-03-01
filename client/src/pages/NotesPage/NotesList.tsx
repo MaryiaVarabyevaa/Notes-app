@@ -11,8 +11,6 @@ import Note from './Note';
 
 const NotesList = () => {
   const [notes, setNotes] = useState<INote[]>([]);
-  const [newQueueNumber, setNewQueueNumber] = useState<number>(1);
-  const [color, setColor] = useState<string>('');
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [currentNote, setCurrentNote] = useState<INote | null>(null);
 
@@ -21,19 +19,25 @@ const NotesList = () => {
     return notes;
   };
 
-  const handleAddBtnClick = async(): Promise<number> => {
+  const handleAddBtnClick = async(): Promise<INote> => {
     const date = getDate();
-    const newNote = await addNote({ queueNumber: newQueueNumber, date, color });
+    const order = notes.length === 0? 1 : notes?.at(-1)?.queueNumber as number + 1;
+    const color = notes.length === 0? '' : notes?.at(-1)?.color as string;
+    const newNote = await addNote({
+      queueNumber: order,
+      date,
+      color: getColor(color),
+    });
+    const newNotes = [ ...notes, newNote ];
+    setNotes(newNotes);
     return newNote;
   };
+
+
 
   useEffect(() => {
     getAllNotes().then((notes) => {
       setNotes(notes);
-      const number = notes?.at(-1)?.queueNumber;
-      const color = notes?.at(-1)?.color;
-      if (number) setNewQueueNumber(number + 1);
-      if (color) setColor(getColor(color));
     });
   },[]);
 
