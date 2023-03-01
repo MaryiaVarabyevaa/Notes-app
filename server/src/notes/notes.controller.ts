@@ -21,7 +21,7 @@ export class NotesController {
   }
 
   @Post('create')
-  addNote(@Body() noteDto: CreateNoteDto): Promise<number> {
+  addNote(@Body() noteDto: CreateNoteDto): Promise<Notes> {
     return this.notesService.create(noteDto);
   }
 
@@ -37,6 +37,6 @@ export class NotesController {
 
   @Put('update-order')
   updateOrder(@Body() noteDto: UpdateNoteDto[]): Promise<void> {
-    return this.notesService.updateOrder(noteDto);
+    return this.notesService.updateQueueNumber(noteDto);
   }
 }

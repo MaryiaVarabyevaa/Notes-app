@@ -10,6 +10,13 @@ interface NoteCreationAttrs {
   tableName: 'notes',
   timestamps: true,
   paranoid: true,
+  hooks: {
+    afterCreate: (note) => {
+      delete note.dataValues.createdAt;
+      delete note.dataValues.updatedAt;
+      delete note.dataValues.deletedAt;
+    },
+  },
 })
 export class Notes extends Model<Notes, NoteCreationAttrs> {
   @Column({

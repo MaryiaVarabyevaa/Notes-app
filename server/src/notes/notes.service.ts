@@ -8,9 +8,9 @@ import { UpdateNoteDto } from './dto/update-note.dto';
 export class NotesService {
   constructor(@InjectModel(Notes) private noteRepository: typeof Notes) {}
 
-  async create(noteDto: CreateNoteDto): Promise<number> {
+  async create(noteDto: CreateNoteDto): Promise<any> {
     const note = await this.noteRepository.create(noteDto);
-    return note.id;
+    return note;
   }
   async update(noteDto: UpdateNoteDto) {
     const { id, ...rest } = noteDto;
@@ -32,7 +32,7 @@ export class NotesService {
     );
     return updatedNote;
   }
-  async updateOrder(noteDto: UpdateNoteDto[]): Promise<void> {
+  async updateQueueNumber(noteDto: UpdateNoteDto[]): Promise<void> {
     for (let i = 0; i < noteDto.length; i++) {
       const { id, queueNumber } = noteDto[i];
       const updatedNote = await this.noteRepository.update(
