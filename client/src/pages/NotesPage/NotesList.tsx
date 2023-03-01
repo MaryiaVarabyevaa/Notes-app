@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, IconButton, Stack, Typography } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { addNote, getNotes, updateOrder } from '../../http/noteAPI';
 import { INote } from '../../types/note';
@@ -7,7 +7,6 @@ import { flex } from '../../helpers/flex';
 import { size } from '../../helpers/size';
 import { getDate } from '../../helpers/getDate';
 import { getColor } from '../../helpers/getColor';
-import { font } from '../../helpers/font';
 import Note from './Note';
 
 const NotesList = () => {
@@ -16,7 +15,6 @@ const NotesList = () => {
   const [color, setColor] = useState<string>('');
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [currentNote, setCurrentNote] = useState<INote | null>(null);
-  const [isUpdated, setIsUpdated] = useState<boolean>(false);
 
   const getAllNotes = async (): Promise<INote[]> => {
     const notes = await getNotes();
@@ -30,8 +28,6 @@ const NotesList = () => {
   };
 
   useEffect(() => {
-    console.log('ls');
-    console.log(isUpdated);
     getAllNotes().then((notes) => {
       setNotes(notes);
       const number = notes?.at(-1)?.queueNumber;
@@ -39,28 +35,18 @@ const NotesList = () => {
       if (number) setNewQueueNumber(number + 1);
       if (color) setColor(getColor(color));
     });
-  },[isUpdated]);
+  },[]);
 
-
-
-  // const handleChangeBtnClick = (id: number) => {
-  //   setIsEdit(!isEdit);
-  // };
-
-  const dragStartHandle = (e:any, note: INote) => {
+  const dragStartHandle = (e: React.DragEvent<HTMLDivElement>, note: INote) => {
     setCurrentNote(note);
   };
 
-  const dragEndHandler = (e:any) => {
-
-  };
-
-  const dragOverHandler = (e:any) => {
+  const dragOverHandler = (e:React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
 
   };
 
-  const dropHandler = async (e:any, note: INote) => {
+  const dropHandler = async (e:React.DragEvent<HTMLDivElement>, note: INote): Promise<void> => {
     e.preventDefault();
     const notesList = notes.map((item) => {
       if (item.id === note.id) {
@@ -72,18 +58,16 @@ const NotesList = () => {
       return item;
     }) as INote[];
     await updateOrder(notesList);
-    setIsUpdated(!isUpdated);
     setNotes(notesList);
   };
+
+  const sortFunc = (a: INote, b: INote) => a.queueNumber - b.queueNumber;
 
   return (
     <Box sx={{ display: 'flex', gap: '30px' }}>
       {
-        notes.length !== 0 && notes.map((note) => (<Box
-          // onClick={() => handleChangeBtnClick(note.id)}
+        notes.length !== 0 && notes.sort(sortFunc).map((note) => (<Box
           onDragStart={(e) => dragStartHandle(e, note)}
-          onDragLeave={(e) => dragEndHandler(e)}
-          onDragEnd={(e) => dragEndHandler(e)}
           onDragOver={(e) => dragOverHandler(e)}
           onDrop={(e) => dropHandler(e, note)}
           draggable={true}
@@ -94,40 +78,7 @@ const NotesList = () => {
             ...flex('column', 'space-between'),
             cursor: 'grab',
           }}>
-          {/*<Note { ...note } />*/}
-          <Stack spacing={1.5}>
-            <Typography variant="h3" sx={{
-              ...font('500', '24px', '36px', '0.05em', '#010101', 'inherit'),
-            }}>
-              { note.header }
-            </Typography>
-            <Typography variant="body2" sx={{
-              ...font('400', '16px', '24px', '0.05em', '#010101','inherit'),
-            }}>
-              { note.text }
-            </Typography>
-          </Stack>
-          <Stack>
-            <Typography sx={{
-              ...font('400', '14px', '21px', '0.05em', '#858585','inherit'),
-              alignSelf: 'end',
-              textAlign: 'right',
-            }}
-            >
-              { note.date }
-            </Typography>
-            <Box sx={{ display: 'flex', gap: '5px' }}>
-              {
-                note.tags.map((tag, index) => {
-                  return <Typography key={index} sx={{
-                    ...font('300', '14px', '21px', '0.05em', '#1B18B4','inherit'),
-                  }}>
-                    { tag }
-                  </Typography>;
-                })
-              }
-            </Box>
-          </Stack>
+          <Note { ...note } />
         </Box>))
       }
       <Box sx={{
