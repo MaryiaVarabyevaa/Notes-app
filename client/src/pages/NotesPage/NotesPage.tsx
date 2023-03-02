@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Button } from '@mui/material';
 import NotesList from './NotesList';
 import SearchBar from './SearchBar';
+import ContextMenu from './ContextMenu';
 
 
 const NotesPage = () => {
