@@ -56,20 +56,23 @@ const NotesList = () => {
   };
 
   const updateNote = async () => {
-    const noteIndex = notes.findIndex((note) => note.id === editedNoteId);
-    const newNote = {
-      id: editedNoteId as number,
-      header: headerValue,
-      text: textValue,
-      tags: notes[noteIndex].tags,
-      queueNumber: notes[noteIndex].queueNumber,
-      date: getDate(),
-      color: notes[noteIndex].color,
-    };
-    await updateNoteInfo(newNote);
-    const copiedNotes = notes.slice();
-    copiedNotes[noteIndex] = newNote;
-    setNotes(copiedNotes);
+    if (editedNoteId) {
+      console.log('updateNote')
+      const noteIndex = notes.findIndex((note) => note.id === editedNoteId);
+      const newNote = {
+        id: editedNoteId as number,
+        header: headerValue,
+        text: textValue,
+        tags: notes[noteIndex].tags,
+        queueNumber: notes[noteIndex].queueNumber,
+        date: getDate(),
+        color: notes[noteIndex].color,
+      };
+      await updateNoteInfo(newNote);
+      const copiedNotes = notes.slice();
+      copiedNotes[noteIndex] = newNote;
+      setNotes(copiedNotes);
+    }
   };
 
   useEffect(() => {
@@ -83,23 +86,16 @@ const NotesList = () => {
   }, [isAdded]);
 
   const handler = async (e: Event) => {
-    // const elem = e.target as HTMLDivElement;
-    // if (editedItem) {
-    //   console.log(elem)
-    //   console.log(editedItem);
-    //
-    //   if (!elem.classList.contains('container') && !editedItem.contains(elem)) {
-    //     console.log('bbb')
-    //     await updateNote();
-    //     setEditedItem(null);
-    //     setEditedNoteId(null);
-    //   }
-    // }
+    const elem = e.target as HTMLDivElement;
+    if (!elem.closest('.container')) {
+      await updateNote();
+      setEditedItem(null);
+      setEditedNoteId(null);
+    }
   };
 
   useEffect(() => {
     document.body.addEventListener('click', handler);
-    // document.body.addEventListener('mouseover', closeContextMenu)
     return () => document.body.removeEventListener('click', handler);
   });
 
@@ -129,15 +125,6 @@ const NotesList = () => {
   const handleClick = async (e: MouseEvent, id: number, header: string, text: string) => {
     const elem = e.target as HTMLDivElement;
     const container = elem.closest('.container') as HTMLDivElement;
-
-    if (editedItem) {
-      editedItem.style.border = 'none';
-      editedItem.style.boxShadow = 'none';
-    }
-
-    container.style.border = '1px solid #85E0A3';
-    container.style.boxShadow = '0px 1px 3px rgba(0, 0, 0, 0.05) inset, 0px 0px 8px #85E0A3';
-
     if (editedItem === elem || editedItem?.contains(elem)) return;
     if (editedItem !== elem && editedItem !== null && !editedItem.contains(elem)) {
       await updateNote();

@@ -29,6 +29,7 @@ const Note =({ ...obj } : INoteComponent) => {
                 multiline
                 value={headerValue}
                 onChange={(e) => setHeaderValue(e.target.value)}
+                placeholder="Enter header"
                 InputProps={{
                   disableUnderline: true,
                   style: {
@@ -42,6 +43,7 @@ const Note =({ ...obj } : INoteComponent) => {
                 multiline
                 value={textValue}
                 onChange={(e) => setTextValue(e.target.value)}
+                placeholder="Enter Text"
                 InputProps={{
                   disableUnderline: true,
                   style: {
