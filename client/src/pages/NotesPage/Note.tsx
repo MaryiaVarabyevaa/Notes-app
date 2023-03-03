@@ -1,9 +1,22 @@
 import React from 'react';
-import { Box, Stack, TextField, Typography } from '@mui/material';
+import { Box, Input, makeStyles, Stack, TextField, Typography } from '@mui/material';
 import { INoteComponent } from '../../types/note';
 import { font } from '../../helpers/font';
 
+
+const classes = {
+  underline: {
+    '&&&:before': {
+      borderBottom: 'none',
+    },
+    '&&:after': {
+      borderBottom: 'none',
+    },
+  },
+};
+
 const Note =({ ...obj } : INoteComponent) => {
+
   const { id, date, text, header, tags, editedItem, editedNoteId, headerValue, setHeaderValue, textValue, setTextValue } = obj;
   return (
     <>
@@ -11,8 +24,32 @@ const Note =({ ...obj } : INoteComponent) => {
         {
           editedItem && editedNoteId === id?
             <>
-              <TextField value={headerValue} onChange={(e) => setHeaderValue(e.target.value)}/>
-              <TextField value={textValue} onChange={(e) => setTextValue(e.target.value)}/>
+              <TextField
+                variant="standard"
+                multiline
+                value={headerValue}
+                onChange={(e) => setHeaderValue(e.target.value)}
+                InputProps={{
+                  disableUnderline: true,
+                  style: {
+                    ...font('500', '24px', '36px', '0.05em', '#010101', 'inherit'),
+                    padding: '0px',
+                  },
+                }}
+              />
+              <TextField
+                variant="standard"
+                multiline
+                value={textValue}
+                onChange={(e) => setTextValue(e.target.value)}
+                InputProps={{
+                  disableUnderline: true,
+                  style: {
+                    ...font('400', '16px', '24px', '0.05em', '#010101','inherit'),
+                    padding: '0px',
+                  },
+                }}
+              />
             </> :
             <>
               <Typography variant="h3" sx={{

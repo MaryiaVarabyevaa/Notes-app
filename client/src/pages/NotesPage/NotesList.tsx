@@ -128,6 +128,16 @@ const NotesList = () => {
 
   const handleClick = async (e: MouseEvent, id: number, header: string, text: string) => {
     const elem = e.target as HTMLDivElement;
+    const container = elem.closest('.container') as HTMLDivElement;
+
+    if (editedItem) {
+      editedItem.style.border = 'none';
+      editedItem.style.boxShadow = 'none';
+    }
+
+    container.style.border = '1px solid #85E0A3';
+    container.style.boxShadow = '0px 1px 3px rgba(0, 0, 0, 0.05) inset, 0px 0px 8px #85E0A3';
+
     if (editedItem === elem || editedItem?.contains(elem)) return;
     if (editedItem !== elem && editedItem !== null && !editedItem.contains(elem)) {
       await updateNote();
