@@ -1,47 +1,32 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import React from 'react';
 import { Box, Stack, TextField, Typography } from '@mui/material';
-import { INote } from '../../types/note';
+import { INoteComponent } from '../../types/note';
 import { font } from '../../helpers/font';
 
-interface INoteNew extends INote {
-  ref: any;
-  isEdit?: boolean;
-  editedNoteId?: number | null;
-}
-
-const Note = forwardRef(({ ...note } : INoteNew, ref) => {
-  const { id, date, text, header, tags, isEdit, editedNoteId } = note;
-  const headerRef = useRef(null);
-  const [headerValue, setHeaderValue] = useState<string>(header);
-  const [textValue, setTextValue] = useState<string>(text);
-
-  useImperativeHandle(ref, () => ({
-    header: headerValue,
-    text: text,
-  }));
-
-  const handleClick = (e: any) => {
-    setHeaderValue(e.target.value);
-  };
-
-
+const Note =({ ...obj } : INoteComponent) => {
+  const { id, date, text, header, tags, editedItem, editedNoteId, headerValue, setHeaderValue, textValue, setTextValue } = obj;
   return (
     <>
       <Stack spacing={1.5}>
         {
-          isEdit && id === editedNoteId?
-            <TextField value={headerValue} onChange={(e) => handleClick(e)} /> :
-            <Typography variant="h3" sx={{
-              ...font('500', '24px', '36px', '0.05em', '#010101', 'inherit'),
-            }}>
-              { header }
-            </Typography>
+          editedItem && editedNoteId === id?
+            <>
+              <TextField value={headerValue} onChange={(e) => setHeaderValue(e.target.value)}/>
+              <TextField value={textValue} onChange={(e) => setTextValue(e.target.value)}/>
+            </> :
+            <>
+              <Typography variant="h3" sx={{
+                ...font('500', '24px', '36px', '0.05em', '#010101', 'inherit'),
+              }}>
+                { header }
+              </Typography>
+              <Typography variant="body2" sx={{
+                ...font('400', '16px', '24px', '0.05em', '#010101','inherit'),
+              }}>
+                { text }
+              </Typography>
+            </>
         }
-        <Typography variant="body2" sx={{
-          ...font('400', '16px', '24px', '0.05em', '#010101','inherit'),
-        }}>
-          { text }
-        </Typography>
       </Stack>
       <Stack>
         <Typography sx={{
@@ -66,6 +51,6 @@ const Note = forwardRef(({ ...note } : INoteNew, ref) => {
       </Stack>
     </>
   );
-});
+};
 
 export default Note;

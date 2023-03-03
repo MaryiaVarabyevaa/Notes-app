@@ -8,7 +8,6 @@ import { size } from '../../helpers/size';
 import { getDate } from '../../helpers/getDate';
 import { getColor } from '../../helpers/getColor';
 import Note from './Note';
-import note from './Note';
 import ContextMenu from './ContextMenu';
 
 interface IInitialContextMenu {
@@ -33,7 +32,9 @@ const NotesList = () => {
   const [contextMenu, setContextMenu] = useState<IInitialContextMenu>(initialContextMenu);
   const [clickedNoteId, setClickedNoteId] = useState<number | null>(null);
   const lastNoteRef = useRef<HTMLInputElement>(null);
-  const childRef = useRef(null);
+
+  const [headerValue, setHeaderValue] = useState('');
+  const [textValue, setTextValue] = useState('');
 
   const getAllNotes = async (): Promise<INote[]> => {
     const notes = await getNotes();
@@ -58,8 +59,8 @@ const NotesList = () => {
     const noteIndex = notes.findIndex((note) => note.id === editedNoteId);
     const newNote = {
       id: editedNoteId as number,
-      header: (childRef?.current as any).header || '' ,
-      text: (childRef?.current as any).text || '',
+      header: headerValue,
+      text: textValue,
       tags: notes[noteIndex].tags,
       queueNumber: notes[noteIndex].queueNumber,
       date: getDate(),
@@ -125,14 +126,15 @@ const NotesList = () => {
     setNotes(notesList);
   };
 
-  const handleClick = async (e: MouseEvent, id: number) => {
+  const handleClick = async (e: MouseEvent, id: number, header: string, text: string) => {
     const elem = e.target as HTMLDivElement;
     if (editedItem === elem || editedItem?.contains(elem)) return;
     if (editedItem !== elem && editedItem !== null && !editedItem.contains(elem)) {
-      console.log('aaaa');
       await updateNote();
     }
     setEditedItem(elem);
+    setHeaderValue(header);
+    setTextValue(text);
     setEditedNoteId(id);
   };
 
@@ -157,7 +159,7 @@ const NotesList = () => {
           notes.length !== 0 && notes.sort(sortFunc).map((note, index) => (<Box
             className="container"
             onContextMenu={(e)=> handleContextMenu(e, note.id)}
-            onClick={(e) => handleClick(e, note.id)}
+            onClick={(e) => handleClick(e, note.id, note.header, note.text)}
             onDragStart={(e) => dragStartHandle(e, note)}
             onDragOver={(e) => dragOverHandler(e)}
             onDrop={(e) => dropHandler(e, note)}
@@ -171,7 +173,15 @@ const NotesList = () => {
               cursor: 'grab',
               height: '600px',
             }}>
-            <Note { ...{ ...note, isEdit: editedItem ? true : false, editedNoteId } } ref={childRef} />
+            <Note { ...{
+              ...note,
+              editedNoteId,
+              editedItem,
+              headerValue,
+              setHeaderValue,
+              textValue,
+              setTextValue,
+            } } />
           </Box>))
         }
       </Box>
