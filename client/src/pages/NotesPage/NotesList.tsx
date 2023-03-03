@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, MouseEvent } from 'react';
+import React, { MouseEvent, useEffect, useRef, useState } from 'react';
 import { Box, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { addNote, getNotes, updateNoteInfo, updateQueueNumber } from '../../http/noteAPI';
@@ -7,6 +7,7 @@ import { flex } from '../../helpers/flex';
 import { size } from '../../helpers/size';
 import { getDate } from '../../helpers/getDate';
 import { getColor } from '../../helpers/getColor';
+import { getTags } from '../../helpers/getTags';
 import Note from './Note';
 import ContextMenu from './ContextMenu';
 
@@ -57,13 +58,12 @@ const NotesList = () => {
 
   const updateNote = async () => {
     if (editedNoteId) {
-      console.log('updateNote')
       const noteIndex = notes.findIndex((note) => note.id === editedNoteId);
       const newNote = {
         id: editedNoteId as number,
         header: headerValue,
         text: textValue,
-        tags: notes[noteIndex].tags,
+        tags: getTags(textValue),
         queueNumber: notes[noteIndex].queueNumber,
         date: getDate(),
         color: notes[noteIndex].color,

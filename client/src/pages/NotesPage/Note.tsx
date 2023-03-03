@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Input, makeStyles, Stack, TextField, Typography } from '@mui/material';
+import { Box, Stack, TextField, Typography } from '@mui/material';
 import { INoteComponent } from '../../types/note';
 import { font } from '../../helpers/font';
 
@@ -16,8 +16,8 @@ const classes = {
 };
 
 const Note =({ ...obj } : INoteComponent) => {
-
   const { id, date, text, header, tags, editedItem, editedNoteId, headerValue, setHeaderValue, textValue, setTextValue } = obj;
+
   return (
     <>
       <Stack spacing={1.5}>
@@ -62,7 +62,13 @@ const Note =({ ...obj } : INoteComponent) => {
               <Typography variant="body2" sx={{
                 ...font('400', '16px', '24px', '0.05em', '#010101','inherit'),
               }}>
-                { text }
+                {
+                  text.split(' ').map((item) => {
+                    return !item.includes('#')?
+                      <>{item}</> :
+                      <Typography sx={{ color: '#1B18B4' }}>{ item.replace(/#/gi, '') }</Typography>;
+                  })
+                }
               </Typography>
             </>
         }
