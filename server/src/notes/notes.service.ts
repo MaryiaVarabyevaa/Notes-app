@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Notes } from './notes.entity';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
+import {Op, Sequelize} from "sequelize";
 
 @Injectable()
 export class NotesService {
@@ -43,22 +44,33 @@ export class NotesService {
       );
     }
   }
-  async getNotes(): Promise<Notes[]> {
-    const notes = await this.noteRepository.findAll({
-      where: {
-        deletedAt: null,
-      },
-      order: [['queueNumber', 'ASC']],
-      attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
-    });
+  async getNotes(tag: string): Promise<Notes[]> {
+    let notes: Notes[];
+    if (tag === '') {
+      notes = await this.noteRepository.findAll({
+        where: {
+          deletedAt: null,
+        },
+        order: [['queueNumber', 'ASC']],
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+      });
+    } else {
+      notes = await this.noteRepository.findAll({
+        where: {
+          tags: { [Op.contains]: [`#${tag}`] },
+        },
+        order: [['queueNumber', 'ASC']],
+        attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+      });
+    }
     return notes;
   }
-  async delete(id: number) {
+  async delete(id: number): Promise<boolean> {
     const deletedNote = await this.noteRepository.destroy({
       where: {
         id,
       },
     });
-    return deletedNote;
+    return !!deletedNote;
   }
 }

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Request,
@@ -16,8 +17,8 @@ import { Notes } from './notes.entity';
 export class NotesController {
   constructor(private notesService: NotesService) {}
   @Get()
-  getNotes(): Promise<Notes[]> {
-    return this.notesService.getNotes();
+  getNotes(@Request() req): Promise<Notes[]> {
+    return this.notesService.getNotes(req.body.tag);
   }
 
   @Post('create')
@@ -31,7 +32,7 @@ export class NotesController {
   }
 
   @Delete('delete')
-  deleteNote(@Request() req) {
+  deleteNote(@Request() req): Promise<boolean> {
     return this.notesService.delete(req.body.id);
   }
 
