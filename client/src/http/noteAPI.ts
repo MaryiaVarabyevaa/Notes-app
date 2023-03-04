@@ -3,7 +3,7 @@ import { $host } from './index';
 
 
 export const getNotes = async (tag: string): Promise<INote[]> => {
-  const { data } = await $host.get('notes', { params: { tag: 'new' } });
+  const { data } = await $host.get('notes', { params: { tag } });
   return data;
 };
 

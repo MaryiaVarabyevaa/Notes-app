@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useRef, useState, DragEvent } from 'react';
+import React, { MouseEvent, useEffect, useRef, useState, DragEvent, Dispatch, SetStateAction } from 'react';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { addNote, getNotes, updateNoteInfo, updateQueueNumber } from '../../http/noteAPI';
@@ -24,14 +24,20 @@ const initialContextMenu: IInitialContextMenu = {
   y: 0,
 };
 
-const NotesList = () => {
+interface INotesList {
+  tag: string;
+  isClickedEnter: boolean;
+  setTag: Dispatch<SetStateAction<string>>;
+  setIsClickedEnter: Dispatch<SetStateAction<boolean>>;
+}
+
+const NotesList = ({ tag, isClickedEnter, setIsClickedEnter, setTag }: INotesList) => {
   const [notes, setNotes] = useState<INote[]>([]);
   const [editedItem, setEditedItem] = useState<HTMLElement | null>(null);
   const [editedNoteId, setEditedNoteId] = useState<number | null>(null);
   const [isAdded, setIsAdded] = useState<boolean>(false);
   const [currentNote, setCurrentNote] = useState<INote | null>(null);
   const [contextMenu, setContextMenu] = useState<IInitialContextMenu>(initialContextMenu);
-  const [tag, setTag] = useState('');
   const lastNoteRef = useRef<HTMLInputElement>(null);
   const contextMenuRef = useRef<any>(null);
 
@@ -39,7 +45,6 @@ const NotesList = () => {
   const [textValue, setTextValue] = useState('');
 
   const getAllNotes = async (): Promise<INote[]> => {
-    // const notes = await getNotes(tag);
     const notes = await getNotes(tag);
     return notes;
   };
@@ -130,7 +135,10 @@ const NotesList = () => {
     getAllNotes().then((notes) => {
       setNotes(notes);
     });
-  },[]);
+    if (isClickedEnter) {
+      setIsClickedEnter(false);
+    };
+  },[isClickedEnter]);
 
   useEffect(() => {
     lastNoteRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });

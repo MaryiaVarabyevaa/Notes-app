@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction, KeyboardEvent } from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -26,13 +26,28 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const SearchBar = () => {
+interface ISearchBar {
+    tag: string;
+    setTag: Dispatch<SetStateAction<string>>;
+    setIsClickedEnter: Dispatch<SetStateAction<boolean>>;
+}
+
+const SearchBar = ({ tag, setTag, setIsClickedEnter } : ISearchBar) => {
+
+  const clickKeyPress = (e: any) => {
+    if(e.keyCode == 13){
+      setIsClickedEnter(true);
+    }
+  };
 
   return (
     <CssTextField
       variant="outlined"
       id="custom-css-outlined-input"
       placeholder="Search tag..."
+      value={tag}
+      onKeyDown={(e) => clickKeyPress(e)}
+      onChange={(e) => setTag(e.target.value)}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
