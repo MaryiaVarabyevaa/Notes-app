@@ -92,6 +92,7 @@ const NotesList = () => {
     if (editedItem == null) {
       setEditedItem(container);
       setEditedNoteId(+id);
+      container.style.boxShadow = '0 0 20px #85E0A3';
     }
     if (editedItem != null && container === editedItem) {
       return;
@@ -100,12 +101,15 @@ const NotesList = () => {
       await updateNote();
       setEditedItem(container);
       setEditedNoteId(+id);
+      editedItem.style.boxShadow = '';
+      container.style.boxShadow = '0 0 20px #85E0A3';
     }
 
     if (!container && editedItem) {
       await updateNote();
       setEditedItem(null);
       setEditedNoteId(null);
+      editedItem.style.boxShadow = '';
     }
   };
 
@@ -137,21 +141,6 @@ const NotesList = () => {
     setNotes(notesList);
   };
 
-  // const handleClick = async (header: string, text: string) => {
-  //   // console.log(1)
-  //   // const elem = e.target as HTMLElement;
-  //   // const container = elem.closest('.container') as HTMLElement;
-  //   // // if (!(editedItem != null && container === editedItem)) {
-  //   // //   setHeaderValue(header);
-  //   // //   setTextValue(text);
-  //   // // // }
-  //   // if (editedItem != null && container && container !== editedItem) {
-  //   //   await updateNote();
-  //   // }
-  //   // setHeaderValue(header);
-  //   // setTextValue(text);
-  // };
-
   const sortFunc = (a: INote, b: INote) => a.queueNumber - b.queueNumber;
 
   const handleContextMenu = (e: MouseEvent, id: number) => {
@@ -174,7 +163,6 @@ const NotesList = () => {
             className="container"
             id={`${note.id}`}
             onContextMenu={(e)=> handleContextMenu(e, note.id)}
-            // onClick={() => handleClick(note.header, note.text)}
             onDragStart={(e) => dragStartHandle(e, note)}
             onDragOver={(e) => dragOverHandler(e)}
             onDrop={(e) => dropHandler(e, note)}
