@@ -9,10 +9,6 @@ const NotesPage = () => {
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '45px', margin: '45px 50px' }}>
       <SearchBar />
       <NotesList />
-      {/*<TextField*/}
-      {/*    onFocus={() => console.log('focus')}*/}
-      {/*    onBlur={() => console.log('blur')}*/}
-      {/*/>*/}
     </Box>
   );
 };

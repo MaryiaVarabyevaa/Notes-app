@@ -59,6 +59,7 @@ const NotesList = () => {
   const updateNote = async () => {
     if (editedNoteId) {
       const noteIndex = notes.findIndex((note) => note.id === editedNoteId);
+      // console.log(getTags(textValue));
       const newNote = {
         id: editedNoteId as number,
         header: headerValue,
@@ -85,14 +86,14 @@ const NotesList = () => {
     lastNoteRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [isAdded]);
 
-  const handler = async (e: any) => {
+  const handleClick = async (e: Event) => {
     const elem = e.target as HTMLElement;
     const container = elem.closest('.container') as HTMLElement;
     const id = container?.id;
     if (editedItem == null) {
       setEditedItem(container);
       setEditedNoteId(+id);
-      container.style.boxShadow = '0 0 20px #85E0A3';
+      if (container) container.style.boxShadow = '0 0 20px #85E0A3';
     }
     if (editedItem != null && container === editedItem) {
       return;
@@ -106,16 +107,38 @@ const NotesList = () => {
     }
 
     if (!container && editedItem) {
+      editedItem.style.boxShadow = '';
       await updateNote();
       setEditedItem(null);
       setEditedNoteId(null);
-      editedItem.style.boxShadow = '';
+    }
+
+    if (contextMenu.show) {
+      setContextMenu(initialContextMenu);
+    }
+  };
+
+  const handleContextMenu = (e: any) => {
+    const elem = e.target as HTMLElement;
+    const container = elem.closest('.container') as HTMLElement;
+    const id = container?.id;
+    const { pageY, pageX } = e;
+
+    if (container || elem === container || (editedItem && container !== editedItem)) {
+      e.preventDefault();
+      setEditedItem(container);
+      setClickedNoteId(+id);
+      setContextMenu({ show: true, x: pageX, y: pageY });
+    }
+    if (!container) {
+      setContextMenu(initialContextMenu);
     }
   };
 
   useEffect(() => {
-    document.body.addEventListener('click', handler);
-    return () => document.body.removeEventListener('click', handler);
+    document.body.addEventListener('click', handleClick);
+    document.body.addEventListener('contextmenu', handleContextMenu);
+    return () => document.body.removeEventListener('click', handleClick);
   });
 
   const dragStartHandle = (e: React.DragEvent<HTMLDivElement>, note: INote) => {
@@ -143,12 +166,12 @@ const NotesList = () => {
 
   const sortFunc = (a: INote, b: INote) => a.queueNumber - b.queueNumber;
 
-  const handleContextMenu = (e: MouseEvent, id: number) => {
-    e.preventDefault();
-    const { pageY, pageX } = e;
-    setClickedNoteId(id);
-    setContextMenu({ show: true, x: pageX, y: pageY });
-  };
+  // const handleContextMenu = (e: MouseEvent, id: number) => {
+  //   e.preventDefault();
+  //   const { pageY, pageX } = e;
+  //   setClickedNoteId(id);
+  //   setContextMenu({ show: true, x: pageX, y: pageY });
+  // };
 
   const closeContextMenu = () => {
     setContextMenu(initialContextMenu);
@@ -162,7 +185,7 @@ const NotesList = () => {
           notes.length !== 0 && notes.sort(sortFunc).map((note, index) => (<Box
             className="container"
             id={`${note.id}`}
-            onContextMenu={(e)=> handleContextMenu(e, note.id)}
+            // onContextMenu={(e)=> handleContextMenu(e, note.id)}
             onDragStart={(e) => dragStartHandle(e, note)}
             onDragOver={(e) => dragOverHandler(e)}
             onDrop={(e) => dropHandler(e, note)}
@@ -170,7 +193,7 @@ const NotesList = () => {
             ref={index === notes.length - 1? lastNoteRef : null}
             key={note.id} sx={{
               bgcolor: `${note.color}`,
-              padding: '8px 15px 0 14px',
+              padding: '8px 15px 8px 14px',
               ...flex('column', 'space-between'),
               flex: '0 0 360px',
               cursor: 'grab',
