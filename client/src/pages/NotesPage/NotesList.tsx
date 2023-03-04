@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useRef, useState } from 'react';
+import React, { MouseEvent, useEffect, useRef, useState, DragEvent } from 'react';
 import { Box, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { addNote, getNotes, updateNoteInfo, updateQueueNumber } from '../../http/noteAPI';
@@ -8,6 +8,7 @@ import { size } from '../../helpers/size';
 import { getDate } from '../../helpers/getDate';
 import { getColor } from '../../helpers/getColor';
 import { getTags } from '../../helpers/getTags';
+import { cloneArray } from '../../helpers/cloneArray';
 import Note from './Note';
 import ContextMenu from './ContextMenu';
 
@@ -30,9 +31,11 @@ const NotesList = () => {
   const [isAdded, setIsAdded] = useState<boolean>(false);
   const [currentNote, setCurrentNote] = useState<INote | null>(null);
   const [contextMenu, setContextMenu] = useState<IInitialContextMenu>(initialContextMenu);
-  const [clickedNoteId, setClickedNoteId] = useState<number | null>(null);
+  // const [clickedNoteId, setClickedNoteId] = useState<number | null>(null);
+  // const [isClickedColor, setIsClickedColor] = useState<boolean>(false);
+  // const [selectedColor, setSelectedColor] = useState<string>('');
   const lastNoteRef = useRef<HTMLInputElement>(null);
-  const ChildRef = useRef<any>(null);
+  const contextMenuRef = useRef<any>(null);
 
   const [headerValue, setHeaderValue] = useState('');
   const [textValue, setTextValue] = useState('');
@@ -56,40 +59,33 @@ const NotesList = () => {
     setIsAdded(!isAdded);
   };
 
-  const updateNote = async () => {
+  const updateNote = async (newColor?: string): Promise<void> => {
     if (editedNoteId) {
-      const noteIndex = notes.findIndex((note) => note.id === editedNoteId);
-      // console.log(getTags(textValue));
-      const newNote = {
+      const { index, copiedNotes } = cloneArray(notes, editedNoteId);
+      const newNote: INote = {
         id: editedNoteId as number,
         header: headerValue,
         text: textValue,
         tags: getTags(textValue),
-        queueNumber: notes[noteIndex].queueNumber,
+        queueNumber: notes[index].queueNumber,
         date: getDate(),
-        color: notes[noteIndex].color,
+        color: newColor? newColor : notes[index].color,
       };
       await updateNoteInfo(newNote);
-      const copiedNotes = notes.slice();
-      copiedNotes[noteIndex] = newNote;
+      copiedNotes[index] = newNote;
       setNotes(copiedNotes);
     }
   };
-
-  useEffect(() => {
-    getAllNotes().then((notes) => {
-      setNotes(notes);
-    });
-  },[]);
-
-  useEffect(() => {
-    lastNoteRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, [isAdded]);
 
   const handleClick = async (e: Event) => {
     const elem = e.target as HTMLElement;
     const container = elem.closest('.container') as HTMLElement;
     const id = container?.id;
+
+    if (contextMenu.show) {
+      setContextMenu(initialContextMenu);
+    }
+
     if (editedItem == null) {
       setEditedItem(container);
       setEditedNoteId(+id);
@@ -112,10 +108,6 @@ const NotesList = () => {
       setEditedItem(null);
       setEditedNoteId(null);
     }
-
-    if (contextMenu.show) {
-      setContextMenu(initialContextMenu);
-    }
   };
 
   const handleContextMenu = (e: any) => {
@@ -127,7 +119,8 @@ const NotesList = () => {
     if (container || elem === container || (editedItem && container !== editedItem)) {
       e.preventDefault();
       setEditedItem(container);
-      setClickedNoteId(+id);
+      setEditedNoteId(+id);
+      // setClickedNoteId(+id);
       setContextMenu({ show: true, x: pageX, y: pageY });
     }
     if (!container) {
@@ -136,20 +129,33 @@ const NotesList = () => {
   };
 
   useEffect(() => {
+    getAllNotes().then((notes) => {
+      setNotes(notes);
+    });
+  },[]);
+
+  useEffect(() => {
+    lastNoteRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [isAdded]);
+
+  useEffect(() => {
     document.body.addEventListener('click', handleClick);
     document.body.addEventListener('contextmenu', handleContextMenu);
-    return () => document.body.removeEventListener('click', handleClick);
+    return () => {
+      document.body.removeEventListener('click', handleClick);
+      document.body.removeEventListener('contextmenu', handleContextMenu);
+    };
   });
 
-  const dragStartHandle = (e: React.DragEvent<HTMLDivElement>, note: INote) => {
+  const dragStartHandle = (e: DragEvent<HTMLDivElement>, note: INote) => {
     setCurrentNote(note);
   };
 
-  const dragOverHandler = (e:React.DragEvent<HTMLDivElement>) => {
+  const dragOverHandler = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
 
-  const dropHandler = async (e:React.DragEvent<HTMLDivElement>, note: INote): Promise<void> => {
+  const dropHandler = async (e: DragEvent<HTMLDivElement>, note: INote): Promise<void> => {
     e.preventDefault();
     const notesList = notes.map((item) => {
       if (item.id === note.id) {
@@ -166,16 +172,10 @@ const NotesList = () => {
 
   const sortFunc = (a: INote, b: INote) => a.queueNumber - b.queueNumber;
 
-  // const handleContextMenu = (e: MouseEvent, id: number) => {
-  //   e.preventDefault();
-  //   const { pageY, pageX } = e;
-  //   setClickedNoteId(id);
-  //   setContextMenu({ show: true, x: pageX, y: pageY });
-  // };
-
   const closeContextMenu = () => {
     setContextMenu(initialContextMenu);
-    setClickedNoteId(null);
+    setEditedNoteId(null);
+    // setClickedNoteId(null);
   };
 
   return (
@@ -185,7 +185,6 @@ const NotesList = () => {
           notes.length !== 0 && notes.sort(sortFunc).map((note, index) => (<Box
             className="container"
             id={`${note.id}`}
-            // onContextMenu={(e)=> handleContextMenu(e, note.id)}
             onDragStart={(e) => dragStartHandle(e, note)}
             onDragOver={(e) => dragOverHandler(e)}
             onDrop={(e) => dropHandler(e, note)}
@@ -207,7 +206,8 @@ const NotesList = () => {
               setHeaderValue,
               textValue,
               setTextValue,
-            } } ref={ChildRef} />
+              contextMenuShown: contextMenu.show,
+            } } />
           </Box>))
         }
       </Box>
@@ -233,9 +233,11 @@ const NotesList = () => {
             x={contextMenu.x}
             y={contextMenu.y}
             notes={notes}
-            id={clickedNoteId}
+            id={editedNoteId}
             setNotes={setNotes}
             closeContextMenu={closeContextMenu}
+            updateNote={updateNote}
+            ref={contextMenuRef}
           />
       }
     </Box>

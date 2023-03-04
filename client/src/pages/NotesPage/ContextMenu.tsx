@@ -1,10 +1,11 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, forwardRef, SetStateAction, useImperativeHandle, useState } from 'react';
 import { Box, Button } from '@mui/material';
 import { size } from '../../helpers/size';
 import { colors } from '../../helpers/getColor';
 import { font } from '../../helpers/font';
 import { deleteNote } from '../../http/noteAPI';
 import { INote } from '../../types/note';
+import { cloneArray } from '../../helpers/cloneArray';
 
 interface IContextMenu {
     x: number;
@@ -13,60 +14,79 @@ interface IContextMenu {
     closeContextMenu: () => void;
     notes: INote[];
     setNotes: Dispatch<SetStateAction<INote[]>>;
+    updateNote: (newColor?: string) => Promise<void>;
+
 }
 
-const ContextMenu = ({ x, y, id, notes, setNotes, closeContextMenu }: IContextMenu) => {
+const ContextMenu = forwardRef(({ x, y, id, notes, setNotes, closeContextMenu, updateNote }: IContextMenu, ref) => {
 
-  const handleDelete = async () => {
+  const handleDelete = async (): Promise<void> => {
     if (id) {
-      const deletedNote = await deleteNote(id);
-      if (deletedNote) {
-        const index = notes.findIndex((note) => note.id === id);
-        const copiedNotes = notes.slice();
-        copiedNotes.splice(index, 1);
-        setNotes(copiedNotes);
-      }
+      const { index, copiedNotes } = cloneArray(notes, id);
+      copiedNotes.splice(index, 1);
+      setNotes(copiedNotes);
       closeContextMenu();
+      const deletedNote: boolean = await deleteNote(id);
     }
   };
-  const handleChooseColor = async (e: any) => {
-    const elem = e.target as HTMLElement;
-    const color = getComputedStyle(elem, null).backgroundColor;
-    // console.log(color);
-    // if (id) {
-    //   // const deletedNote = await deleteNote(id);
-    //   if (true) {
-    //     const index = notes.findIndex((note) => note.id === id);
-    //     const copiedNotes = notes.slice();
-    //     copiedNotes[index].color = color;
-    //     console.log(copiedNotes[index].color )
-    //     // setNotes(copiedNotes);
-    //   }
-    //   closeContextMenu();
-    // }
+  const handleClickColor = async (color: string): Promise<void> => {
+    if (id) {
+      const { index, copiedNotes } = cloneArray(notes, +id);
+      copiedNotes[index].color = color;
+      setNotes(copiedNotes);
+      closeContextMenu();
+      await updateNote(color);
+    }
   };
 
   return (
-    <Box sx={{ display: 'flex', gap: '7px', background: '#858585', borderRadius: '25px 10px 10px 25px', ...size('336px', '40px'), position: 'absolute', top: `${y}px`, left: `${x}px` }}>
-      <Box sx={{ borderRadius: '25px', bgcolor: '#010101', width: '239px', display: 'flex', gap: '5px', padding: '5px 17px' }}>
+    <Box sx={{
+      display: 'flex',
+      gap: '7px',
+      background: '#858585',
+      borderRadius: '25px 10px 10px 25px',
+      ...size('336px', '40px'),
+      position: 'absolute',
+      top: `${y}px`,
+      left: `${x}px` }}>
+      <Box sx={{
+        borderRadius: '25px',
+        bgcolor: '#010101',
+        width: '239px',
+        display: 'flex',
+        gap: '5px',
+        padding: '5px 17px' }}>
         {
           colors.map((color) => {
             return <Button
-              onClick={(e) => handleChooseColor(e)}
+              onClick={() => handleClickColor(color)}
               key={color}
-              sx={{ display: 'block-inline', padding: '0', bgcolor: `${color}`, border: '2px solid #010101', boxShadow: 'inset 0px 0px 0px 4px #FEFEFE', minWidth: '30px', minHeight: '30px', borderRadius: '50%' }}
+              sx={{
+                display: 'block-inline',
+                padding: '0',
+                bgcolor: `${color}`,
+                border: '2px solid #010101',
+                boxShadow: 'inset 0px 0px 0px 4px #FEFEFE',
+                minWidth: '30px',
+                minHeight: '30px',
+                borderRadius: '50%',
+              }}
             ></Button>;
           })
         }
       </Box>
       <Button
         onClick={handleDelete}
-        sx={{ ...font('500', '16px', '22px', '0.05em', '#FEFEFE', 'Noto Sans'), padding: '0', textTransform: 'none' }}
+        sx={{
+          ...font('500', '16px', '22px', '0.05em', '#FEFEFE', 'Noto Sans'),
+          padding: '0',
+          textTransform: 'none',
+        }}
       >
           Remove
       </Button>
     </Box>
   );
-};
+});
 
 export default ContextMenu;

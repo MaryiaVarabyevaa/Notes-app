@@ -4,9 +4,8 @@ import { INoteComponent } from '../../types/note';
 import { font } from '../../helpers/font';
 
 
-const Note = forwardRef(({ ...obj }: INoteComponent, ref) => {
-  const { id, date, text, header, tags, editedItem, editedNoteId, headerValue, setHeaderValue, textValue, setTextValue } = obj;
-  // const [currentText, setCurrentText] = useState<string>('');
+const Note =({ ...obj }: INoteComponent) => {
+  const { id, date, text, header, tags, editedItem, editedNoteId, headerValue, setHeaderValue, textValue, setTextValue, contextMenuShown } = obj;
 
   useLayoutEffect(() => {
     if (id === editedNoteId) {
@@ -15,39 +14,11 @@ const Note = forwardRef(({ ...obj }: INoteComponent, ref) => {
     }
   }, [editedItem]);
 
-
-  // const func = (text: string) => {
-  //   const arr = text.split(' ');
-  //   const newArr = [];
-  //   let str = '';
-  //   for (let i = 0; i < arr.length; i++) {
-  //     if ([arr[i].startsWith('#')]) {
-  //       if (str === '') {
-  //         newArr.push(arr[i] + ' ');
-  //       } else {
-  //         newArr.push(str, arr[i] + ' ');
-  //       }
-  //
-  //       str = '';
-  //     } else {
-  //       str += arr[i] + ' ';
-  //     }
-  //
-  //     if (i === arr.length - 1) {
-  //       console.log('ssssssssss');
-  //       newArr.push(str);
-  //     }
-  //   }
-  //   return newArr;
-  // };
-  //
-  // console.log(func(text));
-
   return (
     <>
       <Stack spacing={1.5}>
         {
-          editedItem && editedNoteId === id?
+          editedItem && editedNoteId === id && !contextMenuShown?
             <>
               <TextField
                 variant="standard"
@@ -84,8 +55,6 @@ const Note = forwardRef(({ ...obj }: INoteComponent, ref) => {
               <Typography variant="h3" sx={{
                 ...font('500', '24px', '36px', '0.05em', '#010101', 'inherit'),
                 minHeight:'36px',
-                // whiteSpace: 'normal',
-                // wordBreak: 'break-word',
                 overflowX: 'auto',
                 whiteSpace: 'nowrap',
                 width: '331px',
@@ -112,7 +81,6 @@ const Note = forwardRef(({ ...obj }: INoteComponent, ref) => {
                       </span>;
                   })
                 }
-                {/*{text}*/}
               </Typography>
             </>
         }
@@ -140,6 +108,6 @@ const Note = forwardRef(({ ...obj }: INoteComponent, ref) => {
       </Stack>
     </>
   );
-});
+};
 
 export default Note;

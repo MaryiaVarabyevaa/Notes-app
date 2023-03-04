@@ -18,6 +18,7 @@ export interface INoteComponent extends INote {
     editedItem: HTMLElement | null;
     editedNoteId: number | null;
     headerValue: string;
+    contextMenuShown: boolean;
     setHeaderValue: Dispatch<SetStateAction<string>>;
     textValue: string;
     setTextValue: Dispatch<SetStateAction<string>>;
