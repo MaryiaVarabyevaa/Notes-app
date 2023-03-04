@@ -23,16 +23,16 @@ const initialContextMenu: IInitialContextMenu = {
   y: 0,
 };
 
-
 const NotesList = () => {
   const [notes, setNotes] = useState<INote[]>([]);
-  const [editedItem, setEditedItem] = useState<HTMLDivElement | null>(null);
+  const [editedItem, setEditedItem] = useState<HTMLElement | null>(null);
   const [editedNoteId, setEditedNoteId] = useState<number | null>(null);
   const [isAdded, setIsAdded] = useState<boolean>(false);
   const [currentNote, setCurrentNote] = useState<INote | null>(null);
   const [contextMenu, setContextMenu] = useState<IInitialContextMenu>(initialContextMenu);
   const [clickedNoteId, setClickedNoteId] = useState<number | null>(null);
   const lastNoteRef = useRef<HTMLInputElement>(null);
+  const ChildRef = useRef<any>(null);
 
   const [headerValue, setHeaderValue] = useState('');
   const [textValue, setTextValue] = useState('');
@@ -85,9 +85,24 @@ const NotesList = () => {
     lastNoteRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [isAdded]);
 
-  const handler = async (e: Event) => {
-    const elem = e.target as HTMLDivElement;
-    if (!elem.closest('.container')) {
+  const handler = async (e: any) => {
+    const elem = e.target as HTMLElement;
+    const container = elem.closest('.container') as HTMLElement;
+    const id = container?.id;
+    if (editedItem == null) {
+      setEditedItem(container);
+      setEditedNoteId(+id);
+    }
+    if (editedItem != null && container === editedItem) {
+      return;
+    }
+    if (editedItem != null && container && container !== editedItem) {
+      await updateNote();
+      setEditedItem(container);
+      setEditedNoteId(+id);
+    }
+
+    if (!container && editedItem) {
       await updateNote();
       setEditedItem(null);
       setEditedNoteId(null);
@@ -122,18 +137,20 @@ const NotesList = () => {
     setNotes(notesList);
   };
 
-  const handleClick = async (e: MouseEvent, id: number, header: string, text: string) => {
-    const elem = e.target as HTMLDivElement;
-    const container = elem.closest('.container') as HTMLDivElement;
-    if (editedItem === elem || editedItem?.contains(elem)) return;
-    if (editedItem !== elem && editedItem !== null && !editedItem.contains(elem)) {
-      await updateNote();
-    }
-    setEditedItem(elem);
-    setHeaderValue(header);
-    setTextValue(text);
-    setEditedNoteId(id);
-  };
+  // const handleClick = async (header: string, text: string) => {
+  //   // console.log(1)
+  //   // const elem = e.target as HTMLElement;
+  //   // const container = elem.closest('.container') as HTMLElement;
+  //   // // if (!(editedItem != null && container === editedItem)) {
+  //   // //   setHeaderValue(header);
+  //   // //   setTextValue(text);
+  //   // // // }
+  //   // if (editedItem != null && container && container !== editedItem) {
+  //   //   await updateNote();
+  //   // }
+  //   // setHeaderValue(header);
+  //   // setTextValue(text);
+  // };
 
   const sortFunc = (a: INote, b: INote) => a.queueNumber - b.queueNumber;
 
@@ -155,8 +172,9 @@ const NotesList = () => {
         {
           notes.length !== 0 && notes.sort(sortFunc).map((note, index) => (<Box
             className="container"
+            id={`${note.id}`}
             onContextMenu={(e)=> handleContextMenu(e, note.id)}
-            onClick={(e) => handleClick(e, note.id, note.header, note.text)}
+            // onClick={() => handleClick(note.header, note.text)}
             onDragStart={(e) => dragStartHandle(e, note)}
             onDragOver={(e) => dragOverHandler(e)}
             onDrop={(e) => dropHandler(e, note)}
@@ -178,7 +196,7 @@ const NotesList = () => {
               setHeaderValue,
               textValue,
               setTextValue,
-            } } />
+            } } ref={ChildRef} />
           </Box>))
         }
       </Box>

@@ -14,7 +14,8 @@ export interface INote extends INoteCreate{
 }
 
 export interface INoteComponent extends INote {
-    editedItem: HTMLDivElement | null;
+    ref?: any;
+    editedItem: HTMLElement | null;
     editedNoteId: number | null;
     headerValue: string;
     setHeaderValue: Dispatch<SetStateAction<string>>;

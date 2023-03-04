@@ -1,8 +1,7 @@
 import React from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import NotesList from './NotesList';
 import SearchBar from './SearchBar';
-import ContextMenu from './ContextMenu';
 
 
 const NotesPage = () => {
@@ -10,6 +9,10 @@ const NotesPage = () => {
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '45px', margin: '45px 50px' }}>
       <SearchBar />
       <NotesList />
+      {/*<TextField*/}
+      {/*    onFocus={() => console.log('focus')}*/}
+      {/*    onBlur={() => console.log('blur')}*/}
+      {/*/>*/}
     </Box>
   );
 };

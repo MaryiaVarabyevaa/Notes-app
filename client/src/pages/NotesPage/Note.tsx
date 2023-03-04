@@ -1,22 +1,17 @@
-import React from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useState } from 'react';
 import { Box, Stack, TextField, Typography } from '@mui/material';
 import { INoteComponent } from '../../types/note';
 import { font } from '../../helpers/font';
 
 
-const classes = {
-  underline: {
-    '&&&:before': {
-      borderBottom: 'none',
-    },
-    '&&:after': {
-      borderBottom: 'none',
-    },
-  },
-};
-
-const Note =({ ...obj } : INoteComponent) => {
+const Note = forwardRef(({ ...obj }: INoteComponent, ref) => {
   const { id, date, text, header, tags, editedItem, editedNoteId, headerValue, setHeaderValue, textValue, setTextValue } = obj;
+
+  useLayoutEffect(() => {
+    if (id === editedNoteId) {
+      setHeaderValue(header);
+    }
+  }, [editedItem]);
 
   return (
     <>
@@ -41,8 +36,8 @@ const Note =({ ...obj } : INoteComponent) => {
               <TextField
                 variant="standard"
                 multiline
-                value={textValue}
-                onChange={(e) => setTextValue(e.target.value)}
+                // value={textValue}
+                // onChange={(e) => setTextValue(e.target.value)}
                 placeholder="Enter Text"
                 InputProps={{
                   disableUnderline: true,
@@ -56,19 +51,23 @@ const Note =({ ...obj } : INoteComponent) => {
             <>
               <Typography variant="h3" sx={{
                 ...font('500', '24px', '36px', '0.05em', '#010101', 'inherit'),
+                minHeight:'36px',
               }}>
                 { header }
               </Typography>
-              <Typography variant="body2" sx={{
+              <Typography sx={{
                 ...font('400', '16px', '24px', '0.05em', '#010101','inherit'),
+                display: 'block-inline',
+                width: '331px',
+                height: '490px',
               }}>
-                {
-                  text.split(' ').map((item) => {
-                    return !item.includes('#')?
-                      <>{item}</> :
-                      <Typography sx={{ color: '#1B18B4' }}>{ item.replace(/#/gi, '') }</Typography>;
-                  })
-                }
+                {/*{*/}
+                {/*  text.split(' ').map((item) => {*/}
+                {/*    return !item.includes('#')?*/}
+                {/*      <>{item + ' '}</> :*/}
+                {/*      <span style={{ color: '#1B18B4' }}>{ item.replace(/#/gi, '') + ' '}</span>;*/}
+                {/*  })*/}
+                {/*}*/}
               </Typography>
             </>
         }
@@ -82,7 +81,7 @@ const Note =({ ...obj } : INoteComponent) => {
         >
           { date }
         </Typography>
-        <Box sx={{ display: 'flex', gap: '5px' }}>
+        <Box sx={{ display: 'flex', gap: '5px', minHeight: '22px' }}>
           {
             tags.map((tag, index) => {
               return <Typography key={index} sx={{
@@ -96,6 +95,6 @@ const Note =({ ...obj } : INoteComponent) => {
       </Stack>
     </>
   );
-};
+});
 
 export default Note;
