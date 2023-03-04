@@ -2,10 +2,11 @@ import { INote, INoteCreate } from '../types/note';
 import { $host } from './index';
 
 
-export const getNotes = async (): Promise<INote[]> => {
-  const { data } = await $host.get('notes');
+export const getNotes = async (tag: string): Promise<INote[]> => {
+  const { data } = await $host.get('notes', { params: { tag: 'new' } });
   return data;
 };
+
 
 export const addNote = async (note: INoteCreate): Promise<INote> => {
   const { data } = await $host.post('notes/create', note);

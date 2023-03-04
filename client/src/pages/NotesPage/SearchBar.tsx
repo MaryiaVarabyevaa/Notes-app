@@ -1,15 +1,37 @@
 import React from 'react';
+import { alpha, styled } from '@mui/material/styles';
 import { InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { font } from '../../helpers/font';
+
+
+const CssTextField = styled(TextField)({
+  width: '360px',
+  '& label.Mui-focused': {
+    color: 'green',
+  },
+  '& .MuiInput-underline:after': {
+    borderBottomColor: 'green',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: '#858585',
+    },
+    // '&:hover fieldset': {
+    //   borderColor: '#85E0A3',
+    // },
+    '&.Mui-focused fieldset': {
+      borderColor: 'green',
+    },
+  },
+});
 
 const SearchBar = () => {
 
   return (
-    <TextField
+    <CssTextField
       variant="outlined"
-      sx={{
-        width: '360px',
-      }}
+      id="custom-css-outlined-input"
       placeholder="Search tag..."
       InputProps={{
         startAdornment: (
@@ -18,9 +40,9 @@ const SearchBar = () => {
           </InputAdornment>
         ),
         style: {
-          color: '#858585',
           height: '40px',
-          padding: 0,
+          padding: '11px 17px',
+          ...font('500', '16px', '22px', '0', '#858585', 'Noto Sans'),
         },
       }}
     />
