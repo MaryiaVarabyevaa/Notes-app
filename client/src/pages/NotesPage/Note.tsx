@@ -1,8 +1,9 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useState, MouseEvent, KeyboardEvent } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { Box, Stack, TextField, Typography } from '@mui/material';
 import { INoteComponent } from '../../types/note';
 import { font } from '../../helpers/font';
-
+import { getTextItems } from '../../helpers/getTextItems';
+import { splitTag } from '../../helpers/splitTag';
 
 const Note =({ ...obj }: INoteComponent) => {
   const { id, date, text, header, tags, editedItem, editedNoteId, headerValue, setHeaderValue, textValue, setTextValue, contextMenuShown } = obj;
@@ -14,17 +15,7 @@ const Note =({ ...obj }: INoteComponent) => {
     }
   }, [editedItem]);
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      const arr = textValue.split('\n');
-      console.log(arr);
-      // console.log(textValue);
-      // const enter = '\n';
-      // setTextValue((oldValue) => oldValue + enter);
-    }
-  };
 
-  console.log(textValue)
   return (
     <>
       <Stack spacing={1.5}>
@@ -51,7 +42,6 @@ const Note =({ ...obj }: INoteComponent) => {
                 multiline
                 value={textValue}
                 onChange={(e) => setTextValue(e.target.value)}
-                onKeyDown={(e) => handleKeyDown(e)}
                 placeholder="Enter Text"
                 rows={19}
                 InputProps={{
@@ -82,18 +72,22 @@ const Note =({ ...obj }: INoteComponent) => {
                 overflowY: 'auto',
               }}
               >
-                {text}
-                {/*{*/}
-                {/*  text.split(' ').map((item, index) => {*/}
-                {/*    return !item.includes('#')?*/}
-                {/*      <span key={index} >{item + ' '}</span> : <span*/}
-                {/*        style={{ color: '#1B18B4' }}*/}
-                {/*        key={index}*/}
-                {/*      >*/}
-                {/*        { item.replace(/#/gi, '') + ' '}*/}
-                {/*      </span>;*/}
-                {/*  })*/}
-                {/*}*/}
+                {
+                  text.length === 0? '' : getTextItems(text).map((item: string, index) => {
+                    return typeof item === 'string' && !item.includes('#')? item + ' ' : (
+                      <>
+                        {
+                          splitTag(item).map((elem) => {
+                            return !elem.includes('#')? elem :
+                              <span style={{ color: elem.includes('#')? '#1B18B4' : 'inherit' }}>
+                                {elem.replace(/#/gi, '')}
+                              </span>;
+                          })
+                        }
+                      </>
+                    );
+                  })
+                }
               </Typography>
             </>
         }
