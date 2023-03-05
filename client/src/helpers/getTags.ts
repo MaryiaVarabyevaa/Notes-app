@@ -3,7 +3,7 @@ export const getTags = (text: string): string[] => {
   const tags = new Set<string>();;
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].includes('#')) {
-      tags.add(arr[i]);
+      tags.add(arr[i].replace(/#/gi, ''));
     }
   }
   return Array.from(tags);

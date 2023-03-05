@@ -25,14 +25,11 @@ const initialContextMenu: IInitialContextMenu = {
 };
 
 interface INotesList {
-  tag: string;
-  isClickedEnter: boolean;
-  setTag: Dispatch<SetStateAction<string>>;
-  setIsClickedEnter: Dispatch<SetStateAction<boolean>>;
+  notes: INote[];
+  setNotes: Dispatch<SetStateAction<INote[]>>;
 }
 
-const NotesList = ({ tag, isClickedEnter, setIsClickedEnter, setTag }: INotesList) => {
-  const [notes, setNotes] = useState<INote[]>([]);
+const NotesList = ({ notes, setNotes }: INotesList) => {
   const [editedItem, setEditedItem] = useState<HTMLElement | null>(null);
   const [editedNoteId, setEditedNoteId] = useState<number | null>(null);
   const [isAdded, setIsAdded] = useState<boolean>(false);
@@ -43,13 +40,6 @@ const NotesList = ({ tag, isClickedEnter, setIsClickedEnter, setTag }: INotesLis
 
   const [headerValue, setHeaderValue] = useState('');
   const [textValue, setTextValue] = useState('');
-
-  const getAllNotes = async (): Promise<INote[]> => {
-    const notes = await getNotes(tag);
-    const tags = await getUniqueTags();
-    console.log(tags);
-    return notes;
-  };
 
   const handleAddBtnClick = async(): Promise<void> => {
     const date = getDate();
@@ -132,15 +122,6 @@ const NotesList = ({ tag, isClickedEnter, setIsClickedEnter, setTag }: INotesLis
       setContextMenu(initialContextMenu);
     }
   };
-
-  useEffect(() => {
-    getAllNotes().then((notes) => {
-      setNotes(notes);
-    });
-    if (isClickedEnter) {
-      setIsClickedEnter(false);
-    };
-  },[isClickedEnter]);
 
   useEffect(() => {
     lastNoteRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
