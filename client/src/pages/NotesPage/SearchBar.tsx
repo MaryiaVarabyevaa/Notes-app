@@ -40,7 +40,7 @@ const SearchBar = ({ setTag, tagsList } : ISearchBar) => {
     options={tagsList}
     onChange={(e, value) => handleClick(value as string)}
     autoHighlight
-    sx={{ width: '360px', padding: '11px 17px' }}
+    sx={{ width: '360px', paddingLeft: '10px' }}
     renderOption={(props, option) => (
       <Typography
         component="li"

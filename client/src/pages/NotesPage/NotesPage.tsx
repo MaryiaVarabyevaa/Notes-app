@@ -35,7 +35,7 @@ const NotesPage = () => {
   }, [notes]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '45px', margin: '45px 50px' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '35px', margin: '45px 50px' }}>
       <SearchBar setTag={setTag} tagsList={tagsList} />
       <NotesList notes={notes} setNotes={setNotes} />
     </Box>

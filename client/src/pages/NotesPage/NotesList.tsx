@@ -85,7 +85,7 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
     if (editedItem == null) {
       setEditedItem(container);
       setEditedNoteId(+id);
-      if (container) container.style.boxShadow = '0 0 20px green';
+      if (container) container.style.boxShadow = '0 0 10px green';
     }
     if (editedItem != null && container === editedItem) {
       return;
@@ -95,7 +95,7 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
       setEditedItem(container);
       setEditedNoteId(+id);
       editedItem.style.boxShadow = '';
-      container.style.boxShadow = '0 0 20px green';
+      container.style.boxShadow = '0 0 10px green';
     }
 
     if (!container && editedItem) {
@@ -186,7 +186,7 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
 
   return (
     <Box sx={{ display: 'flex', gap: '30px' }}>
-      <Box sx={{ width: '1140px', display: 'flex', gap: '30px', overflowX: 'auto', whiteSpace: 'nowrap' }}>
+      <Box sx={{ width: '1160px', display: 'flex', gap: '30px', overflowX: 'auto', whiteSpace: 'nowrap', padding: '10px' }}>
         {
           notes.length !== 0 && notes.sort(sortFunc).map((note, index) => ( <Box
             className="container"
@@ -222,6 +222,7 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
         border: '5px dashed #85E0A3',
         ...size('360px', '600px'),
         ...flex('row', 'center', 'center'),
+        marginTop: '10px',
       }}>
         <IconButton
           sx={{
