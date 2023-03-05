@@ -11,10 +11,10 @@ const NotesPage = () => {
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '45px', margin: '45px 50px' }}>
       <SearchBar tag={tag} setTag={setTag} setIsClickedEnter={setIsClickedEnter}/>
       <NotesList
-          tag={tag}
-          isClickedEnter={isClickedEnter}
-          setIsClickedEnter={setIsClickedEnter}
-          setTag={setTag}
+        tag={tag}
+        isClickedEnter={isClickedEnter}
+        setIsClickedEnter={setIsClickedEnter}
+        setTag={setTag}
       />
     </Box>
   );

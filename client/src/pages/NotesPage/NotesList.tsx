@@ -1,7 +1,7 @@
 import React, { MouseEvent, useEffect, useRef, useState, DragEvent, Dispatch, SetStateAction } from 'react';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { addNote, getNotes, updateNoteInfo, updateQueueNumber } from '../../http/noteAPI';
+import { addNote, getNotes, getUniqueTags, updateNoteInfo, updateQueueNumber } from '../../http/noteAPI';
 import { INote } from '../../types/note';
 import { flex } from '../../helpers/flex';
 import { size } from '../../helpers/size';
@@ -46,6 +46,8 @@ const NotesList = ({ tag, isClickedEnter, setIsClickedEnter, setTag }: INotesLis
 
   const getAllNotes = async (): Promise<INote[]> => {
     const notes = await getNotes(tag);
+    const tags = await getUniqueTags();
+    console.log(tags);
     return notes;
   };
 

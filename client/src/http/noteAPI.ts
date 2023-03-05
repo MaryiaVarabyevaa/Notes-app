@@ -7,6 +7,10 @@ export const getNotes = async (tag: string): Promise<INote[]> => {
   return data;
 };
 
+export const getUniqueTags = async (): Promise<string[]> => {
+  const { data } = await $host.get('notes/tags');
+  return data;
+};
 
 export const addNote = async (note: INoteCreate): Promise<INote> => {
   const { data } = await $host.post('notes/create', note);
