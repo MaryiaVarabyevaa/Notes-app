@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useState, MouseEvent } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useState, MouseEvent, KeyboardEvent } from 'react';
 import { Box, Stack, TextField, Typography } from '@mui/material';
 import { INoteComponent } from '../../types/note';
 import { font } from '../../helpers/font';
@@ -14,6 +14,17 @@ const Note =({ ...obj }: INoteComponent) => {
     }
   }, [editedItem]);
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      const arr = textValue.split('\n');
+      console.log(arr);
+      // console.log(textValue);
+      // const enter = '\n';
+      // setTextValue((oldValue) => oldValue + enter);
+    }
+  };
+
+  console.log(textValue)
   return (
     <>
       <Stack spacing={1.5}>
@@ -40,6 +51,7 @@ const Note =({ ...obj }: INoteComponent) => {
                 multiline
                 value={textValue}
                 onChange={(e) => setTextValue(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e)}
                 placeholder="Enter Text"
                 rows={19}
                 InputProps={{
@@ -65,22 +77,23 @@ const Note =({ ...obj }: INoteComponent) => {
                 ...font('400', '16px', '24px', '0.05em', '#010101','inherit'),
                 height: '490px',
                 width: '331px',
-                whiteSpace: 'normal',
+                whiteSpace: 'pre-wrap',
                 wordBreak: 'break-word',
                 overflowY: 'auto',
               }}
               >
-                {
-                  text.split(' ').map((item, index) => {
-                    return !item.includes('#')?
-                      <span key={index} >{item + ' '}</span> : <span
-                        style={{ color: '#1B18B4' }}
-                        key={index}
-                      >
-                        { item.replace(/#/gi, '') + ' '}
-                      </span>;
-                  })
-                }
+                {text}
+                {/*{*/}
+                {/*  text.split(' ').map((item, index) => {*/}
+                {/*    return !item.includes('#')?*/}
+                {/*      <span key={index} >{item + ' '}</span> : <span*/}
+                {/*        style={{ color: '#1B18B4' }}*/}
+                {/*        key={index}*/}
+                {/*      >*/}
+                {/*        { item.replace(/#/gi, '') + ' '}*/}
+                {/*      </span>;*/}
+                {/*  })*/}
+                {/*}*/}
               </Typography>
             </>
         }
