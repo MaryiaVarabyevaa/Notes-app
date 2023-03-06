@@ -6,19 +6,32 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Request,
 } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { Notes } from './notes.entity';
+import { UpdateTagsDto } from './dto/update-tags.dto';
 
 @Controller('notes')
 export class NotesController {
   constructor(private notesService: NotesService) {}
-  @Get()
-  getNotes(@Request() req): Promise<Notes[]> {
-    return this.notesService.getNotes(req.body.tag);
+
+  @Get('')
+  getNotes(@Query('tag') tag: string): Promise<Notes[]> {
+    return this.notesService.getNotes(tag);
+  }
+
+  @Get('tags')
+  getTags() {
+    return this.notesService.getTags();
+  }
+
+  @Put('update-tags')
+  updateTags(@Body() noteDto: UpdateTagsDto) {
+    return this.notesService.updateTags(noteDto);
   }
 
   @Post('create')
