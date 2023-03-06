@@ -1,7 +1,7 @@
 import { getTextItems } from './getTextItems';
 import { findIndex } from './findIndex';
 
-const REG_EXP: RegExp = /^[a-zA-Z0-9#]+$/;
+const REG_EXP: RegExp = /^[a-zA-Z0-9#_-]+$/;
 const HASH: string = '#';
 
 export const getTags = (text: string): string[] => {

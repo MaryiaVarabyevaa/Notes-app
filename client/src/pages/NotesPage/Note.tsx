@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { Box, Stack, TextField, Typography } from '@mui/material';
 import { INoteComponent } from '../../types/note';
 import { font } from '../../helpers/font';
@@ -15,6 +15,9 @@ const Note =({ ...obj }: INoteComponent) => {
     }
   }, [editedItem]);
 
+  const deleteTag = (id: number, tagValue: string) => {
+
+  };
 
   return (
     <>
@@ -36,6 +39,7 @@ const Note =({ ...obj }: INoteComponent) => {
                     padding: '0px',
                   },
                 }}
+
               />
               <TextField
                 variant="standard"
@@ -107,7 +111,7 @@ const Note =({ ...obj }: INoteComponent) => {
               return <Typography key={index} sx={{
                 ...font('300', '14px', '21px', '0.05em', '#1B18B4','inherit'),
               }}>
-                { tag }
+                {'#' + tag }
               </Typography>;
             })
           }

@@ -43,13 +43,18 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
   const [currentNote, setCurrentNote] = useState<INote | null>(null);
   const [contextMenu, setContextMenu] = useState<IInitialContextMenu>(initialContextMenu);
   const [hint, setHint] = useState<IInitialContextMenu>(initialHint);
-  const lastNoteRef = useRef<HTMLInputElement>(null);
-  const contextMenuRef = useRef<any>(null);
+  const lastNoteRef = useRef<HTMLDivElement>(null);
+  const contextMenuRef = useRef<HTMLDivElement>(null);
 
   const [headerValue, setHeaderValue] = useState('');
   const [textValue, setTextValue] = useState('');
 
   const handleAddBtnClick = async(): Promise<void> => {
+    if (editedItem && editedNoteId) {
+      editedItem.style.boxShadow = '';
+      setEditedItem(null);
+      setEditedNoteId(null);
+    }
     const date = getDate();
     const queueNumber = notes.length === 0? 1 : notes?.at(-1)?.queueNumber as number + 1;
     const color = notes.length === 0? '' : notes?.at(-1)?.color as string;
@@ -61,6 +66,7 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
     const newNotes = [ ...notes, newNote ];
     setNotes(newNotes);
     setIsAdded(!isAdded);
+    setEditedNoteId(newNote.id);
   };
 
   const updateNote = async (newColor?: string): Promise<void> => {
@@ -89,13 +95,13 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
     if (contextMenu.show) {
       setContextMenu(initialContextMenu);
     }
-
     if (editedItem == null) {
       setEditedItem(container);
       setEditedNoteId(+id);
       if (container) container.style.boxShadow = '0 0 10px green';
     }
-    if (editedItem != null && container === editedItem) {
+    if (editedItem != null && container === editedItem ) {
+      container.style.boxShadow = '0 0 10px green';
       return;
     }
     if (editedItem != null && container && container !== editedItem) {
@@ -125,14 +131,20 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
       setEditedItem(container);
       setEditedNoteId(+id);
       setContextMenu({ show: true, x: pageX, y: pageY });
+      if (editedItem && container !== editedItem) editedItem.style.boxShadow = '';
     }
+
     if (!container) {
       setContextMenu(initialContextMenu);
     }
   };
 
   useEffect(() => {
-    lastNoteRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (lastNoteRef.current) {
+      lastNoteRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      lastNoteRef.current.style.boxShadow = '0 0 10px green';
+      setEditedItem(lastNoteRef.current);
+    }
   }, [isAdded]);
 
   useEffect(() => {
@@ -179,13 +191,13 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
   let timer: ReturnType<typeof setTimeout>;
 
   const handlerMouseMove = (e: any) => {
-    e.preventDefault();
-    setHint(initialHint);
-    clearTimeout(timer);
-    const { pageY, pageX } = e;
-    timer = setTimeout(() => {
-      setHint({ show: true, x: pageX + 10, y: pageY + 10 } );
-    }, 2000);
+    // e.preventDefault();
+    // setHint(initialHint);
+    // clearTimeout(timer);
+    // const { pageY, pageX } = e;
+    // timer = setTimeout(() => {
+    //   setHint({ show: true, x: pageX + 10, y: pageY + 10 } );
+    // }, 2000);
   };
 
 
@@ -193,7 +205,7 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
     <Box sx={{ display: 'flex', gap: '30px' }}>
       <Box sx={{ width: '1160px', display: 'flex', gap: '30px', overflowX: 'auto', whiteSpace: 'nowrap', padding: '10px' }}>
         {
-          notes.length !== 0 && notes.sort(sortFunc).map((note, index) => ( <Box
+          notes.length !== 0 && notes.sort(sortFunc).map((note: INote, index: number) => ( <Box
             className="container"
             id={`${note.id}`}
             onDragStart={(e) => dragStartHandle(e, note)}

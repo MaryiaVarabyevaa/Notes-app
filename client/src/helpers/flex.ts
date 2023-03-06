@@ -1,4 +1,3 @@
-
 interface IFlex {
     display: string;
     flexDirection: string;

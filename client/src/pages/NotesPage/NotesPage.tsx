@@ -7,8 +7,6 @@ import SearchBar from './SearchBar';
 import Hint from './Hint';
 
 
-
-
 const NotesPage = () => {
   const [tag, setTag] = useState<string | null>(null);
   const [tagsList, setTagsList] = useState<string[]>([]);
