@@ -11,6 +11,7 @@ import { getTags } from '../../helpers/getTags';
 import { cloneArray } from '../../helpers/cloneArray';
 import Note from './Note';
 import ContextMenu from './ContextMenu';
+import Hint from './Hint';
 
 interface IInitialContextMenu {
   show: boolean;
@@ -29,12 +30,19 @@ interface INotesList {
   setNotes: Dispatch<SetStateAction<INote[]>>;
 }
 
+const initialHint: IInitialContextMenu = {
+  show: false,
+  x: 0,
+  y: 0,
+};
+
 const NotesList = ({ notes, setNotes }: INotesList) => {
   const [editedItem, setEditedItem] = useState<HTMLElement | null>(null);
   const [editedNoteId, setEditedNoteId] = useState<number | null>(null);
   const [isAdded, setIsAdded] = useState<boolean>(false);
   const [currentNote, setCurrentNote] = useState<INote | null>(null);
   const [contextMenu, setContextMenu] = useState<IInitialContextMenu>(initialContextMenu);
+  const [hint, setHint] = useState<IInitialContextMenu>(initialHint);
   const lastNoteRef = useRef<HTMLInputElement>(null);
   const contextMenuRef = useRef<any>(null);
 
@@ -167,21 +175,18 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
     setEditedItem(null);
   };
 
-  // const handleClose = () => {
-  //   setOpenHint(false);
-  // };
-  //
-  // const handleOpen = () => {
-  //   setOpenHint(true);
-  //   return true;
-  // };
 
-  // let timer: ReturnType<typeof setTimeout>;
-  //
-  // const handlerMouseMove = () => {
-  //   clearTimeout(timer);
-  //   timer = setTimeout(handleOpen, 2000);
-  // };
+  let timer: ReturnType<typeof setTimeout>;
+
+  const handlerMouseMove = (e: any) => {
+    e.preventDefault();
+    setHint(initialHint);
+    clearTimeout(timer);
+    const { pageY, pageX } = e;
+    timer = setTimeout(() => {
+      setHint({ show: true, x: pageX + 10, y: pageY + 10 } );
+    }, 2000);
+  };
 
 
   return (
@@ -194,7 +199,7 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
             onDragStart={(e) => dragStartHandle(e, note)}
             onDragOver={(e) => dragOverHandler(e)}
             onDrop={(e) => dropHandler(e, note)}
-            // onMouseMove={handlerMouseMove}
+            onMouseMove={handlerMouseMove}
             draggable={true}
             ref={index === notes.length - 1? lastNoteRef : null}
             key={note.id} sx={{
@@ -247,6 +252,10 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
             updateNote={updateNote}
             ref={contextMenuRef}
           />
+      }
+      {
+        hint.show && !contextMenu.show &&
+          <Hint x={hint.x} y={hint.y} />
       }
     </Box>
   );

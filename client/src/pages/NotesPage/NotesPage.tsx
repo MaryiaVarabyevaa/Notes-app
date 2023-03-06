@@ -4,6 +4,7 @@ import { getNotes, getUniqueTags } from '../../http/noteAPI';
 import { INote } from '../../types/note';
 import NotesList from './NotesList';
 import SearchBar from './SearchBar';
+import Hint from './Hint';
 
 
 

@@ -48,7 +48,8 @@ const ContextMenu = forwardRef(({ x, y, id, notes, setNotes, closeContextMenu, u
       ...size('336px', '40px'),
       position: 'absolute',
       top: `${y}px`,
-      left: `${x}px` }}>
+      left: `${x}px` }}
+    >
       <Box sx={{
         borderRadius: '25px',
         bgcolor: '#010101',
