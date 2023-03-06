@@ -224,6 +224,8 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
             }}>
             <Note { ...{
               ...note,
+              notes,
+              setNotes,
               editedNoteId,
               editedItem,
               headerValue,
@@ -237,8 +239,9 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
       </Box>
       <Box sx={{
         border: '5px dashed #85E0A3',
-        ...size('360px', '600px'),
+        // ...size('360px', '600px'),
         ...flex('row', 'center', 'center'),
+        flex: '0 0 360px',
         marginTop: '10px',
       }}>
         <IconButton

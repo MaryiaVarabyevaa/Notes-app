@@ -14,7 +14,6 @@ export interface INote extends INoteCreate{
 }
 
 export interface INoteComponent extends INote {
-    ref?: any;
     editedItem: HTMLElement | null;
     editedNoteId: number | null;
     headerValue: string;
@@ -22,4 +21,13 @@ export interface INoteComponent extends INote {
     setHeaderValue: Dispatch<SetStateAction<string>>;
     textValue: string;
     setTextValue: Dispatch<SetStateAction<string>>;
+    notes: INote[];
+    setNotes: Dispatch<SetStateAction<INote[]>>;
+}
+
+export interface ITagsUpdate {
+    id: number;
+    text: string;
+    tags: string[];
+    date: string;
 }

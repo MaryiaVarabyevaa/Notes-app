@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, MouseEvent } from 'react';
 import { AppBar, Box, Toolbar } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { MAIN_ROUTE, NOTES_ROUTE } from '../../constants/routes';
 import { ILink } from '../../types/navBar';
+import { font } from '../../helpers/font';
 import NavLink from './NavLink';
 
 
@@ -18,6 +20,17 @@ const links: ILink[] = [
 
 
 const NavBar = () => {
+  const [elem, setElem] = useState<HTMLElement | null>(null);
+  const handleClick = (e: MouseEvent) => {
+    const linkElem = e.target as HTMLElement;
+    if (elem) {
+      elem.style.color = '#858585';
+    }
+    linkElem.style.color = '#010101';
+    setElem(linkElem);
+  };
+
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -29,8 +42,19 @@ const NavBar = () => {
         }}
       >
         <Toolbar sx={{ justifyContent: 'center', height: 'inherit', gap: '64px' }}>
+
           {
-            links.map(({ text, link }, index) => <NavLink text={text} link={link} key={index}/>)
+            links.map(({ text, link }, index) => <Link
+              onClick={(e) => handleClick(e)}
+              to={link}
+              style={{
+                ...font('700', '24px', '33px', '0.05em', '#858585'),
+                // color: `${isClicked? 'red': 'green'}`,
+                textDecoration: 'none',
+              }}
+            >
+              { text }
+            </Link>)
           }
         </Toolbar>
       </AppBar>

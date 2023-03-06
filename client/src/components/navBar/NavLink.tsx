@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ILink } from '../../types/navBar';
 import { font } from '../../helpers/font';
 
 const NavLink = ({ text, link }: ILink) => {
+  const [isClickedNotes, setIsClickedNotes] = useState();
 
+  const handleClick = () => {
+
+  };
   return (
     <Link
       to={link}

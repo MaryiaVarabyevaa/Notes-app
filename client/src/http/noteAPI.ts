@@ -1,4 +1,4 @@
-import { INote, INoteCreate } from '../types/note';
+import { INote, INoteCreate, ITagsUpdate } from '../types/note';
 import { $host } from './index';
 
 
@@ -23,6 +23,10 @@ export const updateQueueNumber = async (notes: INote[]): Promise<void> => {
 
 export const updateNoteInfo = async (note: INote): Promise<void> => {
   const { data } = await $host.put('notes/update', note);
+};
+
+export const updateTags = async (note: ITagsUpdate): Promise<void> => {
+  const { data } = await $host.put('notes/update-tags', note);
 };
 
 export const deleteNote = async (id: number): Promise<boolean> => {

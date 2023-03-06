@@ -4,9 +4,26 @@ import { INoteComponent } from '../../types/note';
 import { font } from '../../helpers/font';
 import { getTextItems } from '../../helpers/getTextItems';
 import { splitTag } from '../../helpers/splitTag';
+import { updateTags } from '../../http/noteAPI';
+import { getDate } from '../../helpers/getDate';
+import { cloneArray } from '../../helpers/cloneArray';
+
+const editText = (text: string, tag: string): string => {
+  const textItems = getTextItems(text);
+  const newText = textItems.map((item: string) => {
+    if (item.includes('#') && item.replace(/#/g, '') === tag) {
+      return item.replace(/#/g, '');
+    }
+    return item;
+  });
+  return newText.join(' ');
+};
 
 const Note =({ ...obj }: INoteComponent) => {
-  const { id, date, text, header, tags, editedItem, editedNoteId, headerValue, setHeaderValue, textValue, setTextValue, contextMenuShown } = obj;
+  const { id, date, text, header, tags, editedItem,
+    editedNoteId, headerValue, setHeaderValue,
+    textValue, setTextValue, contextMenuShown,
+    notes, setNotes } = obj;
 
   useLayoutEffect(() => {
     if (id === editedNoteId) {
@@ -15,9 +32,26 @@ const Note =({ ...obj }: INoteComponent) => {
     }
   }, [editedItem]);
 
-  const deleteTag = (id: number, tagValue: string) => {
-
-  };
+  // const handleDeleteTag = async (tagValue: string) => {
+  //   if (id === editedNoteId) {
+  //     // const newText = editText(text, tagValue);
+  //     // const newTags = tags.filter((tag) => tag !== tagValue);
+  //     // const date = getDate();
+  //     //
+  //     // setTextValue(newText);
+  //     // const { index, copiedNotes } = cloneArray(notes, editedNoteId);
+  //     // copiedNotes[index].text = newText;
+  //     // copiedNotes[index].tags = newTags;
+  //     // copiedNotes[index].date = date;
+  //     // setNotes(copiedNotes);
+  //     // await updateTags({
+  //     //   id,
+  //     //   date,
+  //     //   text: newText,
+  //     //   tags: newTags,
+  //     // });
+  //   }
+  // };
 
   return (
     <>
@@ -83,7 +117,7 @@ const Note =({ ...obj }: INoteComponent) => {
                         {
                           splitTag(item).map((elem) => {
                             return !elem.includes('#')? elem :
-                              <span style={{ color: elem.includes('#')? '#1B18B4' : 'inherit' }}>
+                              <span key={index} style={{ color: elem.includes('#')? '#1B18B4' : 'inherit' }}>
                                 {elem.replace(/#/gi, '')}
                               </span>;
                           })
@@ -110,7 +144,10 @@ const Note =({ ...obj }: INoteComponent) => {
             tags.map((tag, index) => {
               return <Typography key={index} sx={{
                 ...font('300', '14px', '21px', '0.05em', '#1B18B4','inherit'),
-              }}>
+                cursor: `${id === editedNoteId}`? 'pointer' : 'grab',
+              }}
+              // onClick={() => handleDeleteTag(tag) }
+              >
                 {'#' + tag }
               </Typography>;
             })
