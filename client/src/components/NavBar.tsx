@@ -1,11 +1,9 @@
-import React, { useState, MouseEvent } from 'react';
+import React, { useState, MouseEvent, useEffect, useLayoutEffect } from 'react';
 import { AppBar, Box, Toolbar } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { MAIN_ROUTE, NOTES_ROUTE } from '../../constants/routes';
-import { ILink } from '../../types/navBar';
-import { font } from '../../helpers/font';
-import NavLink from './NavLink';
-
+import { Link, useLocation } from 'react-router-dom';
+import { MAIN_ROUTE, NOTES_ROUTE } from '../constants/routes';
+import { ILink } from '../types/navBar';
+import { font } from '../helpers/font';
 
 const links: ILink[] = [
   {
@@ -21,15 +19,19 @@ const links: ILink[] = [
 
 const NavBar = () => {
   const [elem, setElem] = useState<HTMLElement | null>(null);
-  const handleClick = (e: MouseEvent) => {
-    const linkElem = e.target as HTMLElement;
-    if (elem) {
-      elem.style.color = '#858585';
-    }
-    linkElem.style.color = '#010101';
-    setElem(linkElem);
-  };
+  const { pathname } = useLocation();
 
+  useEffect(() => {
+    const main = document.body.querySelector('.main') as HTMLElement;
+    const notes = document.body.querySelector('.notes') as HTMLElement;
+    if (pathname === '/notes') {
+      notes.style.color = '#010101';
+      main.style.color = '#858585';
+    } else {
+      notes.style.color = '#858585';
+      main.style.color = '#010101';
+    }
+  });
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -45,11 +47,11 @@ const NavBar = () => {
 
           {
             links.map(({ text, link }, index) => <Link
-              onClick={(e) => handleClick(e)}
+              key={link}
               to={link}
+              className={text === 'Home' ? 'main' : 'notes'}
               style={{
                 ...font('700', '24px', '33px', '0.05em', '#858585'),
-                // color: `${isClicked? 'red': 'green'}`,
                 textDecoration: 'none',
               }}
             >

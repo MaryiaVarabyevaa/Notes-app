@@ -1,14 +1,14 @@
-import React, { MouseEvent, useEffect, useRef, useState, DragEvent, Dispatch, SetStateAction } from 'react';
-import { Box, IconButton, Tooltip } from '@mui/material';
+import React, { Dispatch, DragEvent, MouseEvent, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Box, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { addNote, getNotes, getUniqueTags, updateNoteInfo, updateQueueNumber } from '../../http/noteAPI';
+import { addNote, updateNoteInfo, updateQueueNumber } from '../../http/noteAPI';
 import { INote } from '../../types/note';
 import { flex } from '../../helpers/flex';
-import { size } from '../../helpers/size';
 import { getDate } from '../../helpers/getDate';
 import { getColor } from '../../helpers/getColor';
 import { getTags } from '../../helpers/getTags';
 import { cloneArray } from '../../helpers/cloneArray';
+import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import Note from './Note';
 import ContextMenu from './ContextMenu';
 import Hint from './Hint';
@@ -28,6 +28,7 @@ const initialContextMenu: IInitialContextMenu = {
 interface INotesList {
   notes: INote[];
   setNotes: Dispatch<SetStateAction<INote[]>>;
+  setTag: Dispatch<SetStateAction<string | null>>;
 }
 
 const initialHint: IInitialContextMenu = {
@@ -36,7 +37,7 @@ const initialHint: IInitialContextMenu = {
   y: 0,
 };
 
-const NotesList = ({ notes, setNotes }: INotesList) => {
+const NotesList = ({ notes, setNotes, setTag }: INotesList) => {
   const [editedItem, setEditedItem] = useState<HTMLElement | null>(null);
   const [editedNoteId, setEditedNoteId] = useState<number | null>(null);
   const [isAdded, setIsAdded] = useState<boolean>(false);
@@ -45,9 +46,10 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
   const [hint, setHint] = useState<IInitialContextMenu>(initialHint);
   const lastNoteRef = useRef<HTMLDivElement>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
-
   const [headerValue, setHeaderValue] = useState('');
   const [textValue, setTextValue] = useState('');
+  const { width } = useWindowDimensions();
+
 
   const handleAddBtnClick = async(): Promise<void> => {
     if (editedItem && editedNoteId) {
@@ -55,6 +57,7 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
       setEditedItem(null);
       setEditedNoteId(null);
     }
+    // setTag('');
     const date = getDate();
     const queueNumber = notes.length === 0? 1 : notes?.at(-1)?.queueNumber as number + 1;
     const color = notes.length === 0? '' : notes?.at(-1)?.color as string;
@@ -112,7 +115,7 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
       container.style.boxShadow = '0 0 10px green';
     }
 
-    if (!container && editedItem) {
+    if (!container && editedItem && !elem.classList.contains('tag')) {
       editedItem.style.boxShadow = '';
       await updateNote();
       setEditedItem(null);
@@ -190,20 +193,35 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
 
   let timer: ReturnType<typeof setTimeout>;
 
-  const handlerMouseMove = (e: any) => {
-    // e.preventDefault();
-    // setHint(initialHint);
+  const handlerMouseMove = (e: MouseEvent) => {
+    e.preventDefault();
     // clearTimeout(timer);
+    // setHint(initialHint);
     // const { pageY, pageX } = e;
     // timer = setTimeout(() => {
-    //   setHint({ show: true, x: pageX + 10, y: pageY + 10 } );
-    // }, 2000);
+    //   // console.log(hint.x);
+    //   setHint({ show: true, x: pageX, y: pageY } );
+    // }, 1000);
   };
 
 
   return (
     <Box sx={{ display: 'flex', gap: '30px' }}>
-      <Box sx={{ width: '1160px', display: 'flex', gap: '30px', overflowX: 'auto', whiteSpace: 'nowrap', padding: '10px' }}>
+      <Box sx={{
+        width: '1160px',
+        display: 'flex',
+        gap: '30px',
+        overflowX: 'auto',
+        overflowY: 'auto',
+        whiteSpace: 'nowrap',
+        padding: '10px',
+        '@media (max-width: 360px)': {
+          height: '600px',
+          flexDirection: 'column',
+          padding: 0,
+          gap: 0,
+        },
+      }}>
         {
           notes.length !== 0 && notes.sort(sortFunc).map((note: INote, index: number) => ( <Box
             className="container"
@@ -221,6 +239,9 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
               flex: '0 0 360px',
               cursor: 'grab',
               height: '600px',
+              '@media (max-width: 360px)': {
+                padding: 0,
+              },
             }}>
             <Note { ...{
               ...note,
@@ -237,24 +258,26 @@ const NotesList = ({ notes, setNotes }: INotesList) => {
           </Box>))
         }
       </Box>
-      <Box sx={{
-        border: '5px dashed #85E0A3',
-        // ...size('360px', '600px'),
-        ...flex('row', 'center', 'center'),
-        flex: '0 0 360px',
-        marginTop: '10px',
-      }}>
-        <IconButton
-          sx={{
-            border: '4px solid #85E0A3',
-            color: '#85E0A3',
-            padding: '0',
-          }}
-          onClick={handleAddBtnClick}
-        >
-          <AddIcon sx={{ fontSize: 40, margin: '36px', color: '#85E0A3' }}/>
-        </IconButton>
-      </Box>
+      {
+        width > 360 && <Box sx={{
+          border: '5px dashed #85E0A3',
+          // ...size('360px', '600px'),
+          ...flex('row', 'center', 'center'),
+          flex: '0 0 360px',
+          marginTop: '10px',
+        }}>
+          <IconButton
+            sx={{
+              border: '4px solid #85E0A3',
+              color: '#85E0A3',
+              padding: '0',
+            }}
+            onClick={handleAddBtnClick}
+          >
+            <AddIcon sx={{ fontSize: 40, margin: '36px', color: '#85E0A3' }}/>
+          </IconButton>
+        </Box>
+      }
       {
         contextMenu.show &&
           <ContextMenu

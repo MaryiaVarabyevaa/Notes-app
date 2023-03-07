@@ -11,6 +11,7 @@ import { cloneArray } from '../../helpers/cloneArray';
 const editText = (text: string, tag: string): string => {
   const textItems = getTextItems(text);
   const newText = textItems.map((item: string) => {
+    console.log(item.replace(/#/g, ''));
     if (item.includes('#') && item.replace(/#/g, '') === tag) {
       return item.replace(/#/g, '');
     }
@@ -32,26 +33,26 @@ const Note =({ ...obj }: INoteComponent) => {
     }
   }, [editedItem]);
 
-  // const handleDeleteTag = async (tagValue: string) => {
-  //   if (id === editedNoteId) {
-  //     // const newText = editText(text, tagValue);
-  //     // const newTags = tags.filter((tag) => tag !== tagValue);
-  //     // const date = getDate();
-  //     //
-  //     // setTextValue(newText);
-  //     // const { index, copiedNotes } = cloneArray(notes, editedNoteId);
-  //     // copiedNotes[index].text = newText;
-  //     // copiedNotes[index].tags = newTags;
-  //     // copiedNotes[index].date = date;
-  //     // setNotes(copiedNotes);
-  //     // await updateTags({
-  //     //   id,
-  //     //   date,
-  //     //   text: newText,
-  //     //   tags: newTags,
-  //     // });
-  //   }
-  // };
+  const handleDeleteTag = async (tagValue: string) => {
+    if (id === editedNoteId) {
+      const newText = editText(text, tagValue);
+      const newTags = tags.filter((tag) => tag !== tagValue);
+      const date = getDate();
+
+      setTextValue(newText);
+      const { index, copiedNotes } = cloneArray(notes, editedNoteId);
+      copiedNotes[index].text = newText;
+      copiedNotes[index].tags = newTags;
+      copiedNotes[index].date = date;
+      setNotes(copiedNotes);
+      await updateTags({
+        id,
+        date,
+        text: newText,
+        tags: newTags,
+      });
+    }
+  };
 
   return (
     <>
@@ -142,11 +143,11 @@ const Note =({ ...obj }: INoteComponent) => {
         <Box sx={{ display: 'flex', gap: '5px', minHeight: '22px' }}>
           {
             tags.map((tag, index) => {
-              return <Typography key={index} sx={{
+              return <Typography key={index} className="tag" sx={{
                 ...font('300', '14px', '21px', '0.05em', '#1B18B4','inherit'),
                 cursor: `${id === editedNoteId}`? 'pointer' : 'grab',
               }}
-              // onClick={() => handleDeleteTag(tag) }
+              onClick={() => handleDeleteTag(tag) }
               >
                 {'#' + tag }
               </Typography>;
