@@ -1,21 +1,39 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Box, TextField } from '@mui/material';
+import { Box, Drawer, TextField } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import { getNotes, getUniqueTags } from '../../http/noteAPI';
-import { INote } from '../../types/note';
+import { INote, INoteState, IRootState } from '../../types/note';
 import { useWindowDimensions } from '../../hooks/useWindowDimensions';
+import SearchBar from '../../components/SearchBar';
+import { addNoteAction, setNotesAction } from '../../store/noteReducer';
+import { ITagState } from '../../types/tag';
+import { setTagsAction } from '../../store/tagsReducer';
 import NotesList from './NotesList';
-import SearchBar from './SearchBar';
-import Hint from './Hint';
 
+
+const headerLength = '80px';
 
 const NotesPage = () => {
-  const [tag, setTag] = useState<string | null>(null);
-  const [tagsList, setTagsList] = useState<string[]>([]);
-  const [notes, setNotes] = useState<INote[]>([]);
   const { width } = useWindowDimensions();
+  const notes = useSelector((state: IRootState) => state.noteReducer.notes);
+  const currentTag = useSelector((state: IRootState) => state.tagsReducer.currentTag);
+  const dispatch = useDispatch();
+    // const [currentPage, setCurrentPage] = useState();
+    // const [fetching, setFetching] = useState(true);
+    //
+    // useEffect(() =>{
+    //   const box = document.body.querySelector('.box') as HTMLElement;
+    //   box.addEventListener('scroll', scrollHandler);
+    //   return () => box.addEventListener('scroll', scrollHandler);
+    // }, []);
+    //
+    // const scrollHandler = (e: any) => {
+    //   console.log('scroll');
+    // };
 
-  const getAllNotes = async (): Promise<INote[]> => {
-    const hashTag = tag? tag : '';
+
+    const getAllNotes = async (): Promise<INote[]> => {
+    const hashTag = currentTag? currentTag : '';
     const notes = await getNotes(hashTag);
     return notes;
   };
@@ -26,13 +44,11 @@ const NotesPage = () => {
   };
 
   useEffect(() => {
-    getAllNotes().then((notes) => {
-      setNotes(notes);
-    });
-  },[tag]);
+    getAllNotes().then((notes) => dispatch(setNotesAction(Array.from(notes))));
+  },[currentTag]);
 
   useEffect(() => {
-    getTags().then((tags) => setTagsList(Array.from(tags)));
+    getTags().then((tags) => dispatch(setTagsAction(Array.from(tags))));
   }, [notes]);
 
   return (
@@ -40,15 +56,25 @@ const NotesPage = () => {
       display: 'flex',
       flexDirection: 'column',
       gap: '35px',
-      margin: '45px 50px',
-      '@media (max-width: 360px)': {
-        margin: 0,
+      padding: '45px 50px',
+      '@media (max-width: 870px)': {
+        padding: 0,
+        paddingTop: '20px',
+        alignItems: 'center',
       },
-    }}>
+      '@media (max-width: 360px)': {
+        padding: 0,
+      },
+    }}
+    style={{
+      height: `calc(100vh - ${headerLength})`,
+      overflowY: 'hidden', whiteSpace: 'nowrap',
+    }}
+    >
       {
-        width > 360 && <SearchBar setTag={setTag} tagsList={tagsList} />
+        width > 360 && <SearchBar />
       }
-      <NotesList notes={notes} setNotes={setNotes} setTag={setTag} />
+      <NotesList />
     </Box>
   );
 };

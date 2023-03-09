@@ -1,30 +1,23 @@
-import React, { Dispatch, forwardRef, SetStateAction, useImperativeHandle, useState } from 'react';
+import React, { forwardRef } from 'react';
 import { Box, Button } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import { size } from '../../helpers/size';
 import { colors } from '../../helpers/getColor';
 import { font } from '../../helpers/font';
 import { deleteNote } from '../../http/noteAPI';
-import { INote } from '../../types/note';
+import { IRootState } from '../../types/note';
 import { cloneArray } from '../../helpers/cloneArray';
+import { updateNotesAction } from '../../store/noteReducer';
+import { IContextMenu } from '../../types/contextMenu';
 
-interface IContextMenu {
-    x: number;
-    y: number;
-    id: number | null;
-    closeContextMenu: () => void;
-    notes: INote[];
-    setNotes: Dispatch<SetStateAction<INote[]>>;
-    updateNote: (newColor?: string) => Promise<void>;
-
-}
-
-const ContextMenu = forwardRef(({ x, y, id, notes, setNotes, closeContextMenu, updateNote }: IContextMenu, ref) => {
-
+const ContextMenu = ({ x, y, id, closeContextMenu, updateNote }: IContextMenu) => {
+  const dispatch = useDispatch();
+  const notes = useSelector((state: IRootState) => state.noteReducer.notes);
   const handleDelete = async (): Promise<void> => {
     if (id) {
       const { index, copiedNotes } = cloneArray(notes, id);
       copiedNotes.splice(index, 1);
-      setNotes(copiedNotes);
+      dispatch(updateNotesAction(copiedNotes));
       closeContextMenu();
       const deletedNote: boolean = await deleteNote(id);
     }
@@ -33,7 +26,6 @@ const ContextMenu = forwardRef(({ x, y, id, notes, setNotes, closeContextMenu, u
     if (id) {
       const { index, copiedNotes } = cloneArray(notes, +id);
       copiedNotes[index].color = color;
-      setNotes(copiedNotes);
       closeContextMenu();
       await updateNote(color);
     }
@@ -88,6 +80,6 @@ const ContextMenu = forwardRef(({ x, y, id, notes, setNotes, closeContextMenu, u
       </Button>
     </Box>
   );
-});
+};
 
 export default ContextMenu;

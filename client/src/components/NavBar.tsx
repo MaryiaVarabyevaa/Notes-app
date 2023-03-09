@@ -18,7 +18,6 @@ const links: ILink[] = [
 
 
 const NavBar = () => {
-  const [elem, setElem] = useState<HTMLElement | null>(null);
   const { pathname } = useLocation();
 
   useEffect(() => {

@@ -1,10 +1,7 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { BottomNavigation, BottomNavigationAction, Box, Button, Divider, Drawer, Paper } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ArchiveIcon from '@mui/icons-material/Archive';
-
-import { Link, useLocation, useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Box, Button, Drawer } from '@mui/material';
+import { Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import NoteLink from '../assets/NoteLink.png';
 import Vector from '../assets/Vector.png';
 import Menu from '../assets/Menu.png';
@@ -12,6 +9,12 @@ import AddBtn from '../assets/AddBtn.png';
 import { MAIN_ROUTE, NOTES_ROUTE } from '../constants/routes';
 import { size } from '../helpers/size';
 import { flex } from '../helpers/flex';
+import { getUniqueTags } from '../http/noteAPI';
+import { IRootState } from '../types/note';
+import { setTagsAction } from '../store/tagsReducer';
+import { addNoteAction } from '../store/noteReducer';
+import { addNewNote } from '../helpers/addNewNote';
+import SearchBar from './SearchBar';
 
 const linkStyle = {
   background: '#FEFEFE',
@@ -24,31 +27,69 @@ const linkStyle = {
   alignItems: 'center',
 };
 
+
 const Panel = () => {
   const { pathname } = useLocation();
-  const [value, setValue] = React.useState(0);
-  const ref = React.useRef<HTMLDivElement>(null);
+  const [open, setOpen] = React.useState(false);
+  const notes = useSelector((state: IRootState) => state.noteReducer.notes);
+  const dispatch = useDispatch();
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const getTags = async (): Promise<string[]> => {
+    const tags = await getUniqueTags();
+    return tags;
+  };
+  useEffect(() => {
+    getTags().then((tags) => dispatch(setTagsAction(Array.from(tags))));
+  } );
+
+  const list = () => (
+    <Box
+      sx={{
+        width: 'auto',
+        height: '324px',
+        padding: '10px 10px 274px 10px',
+        background: 'rgba(254, 254, 254, 0.9)',
+        boxShadow: '0px -5px 10px rgba(0, 0, 0, 0.25)',
+      }}
+      // role="presentation"
+      // onClick={handleClose}
+      onKeyDown={handleClose}
+    >
+      <SearchBar />
+    </Box>
+  );
+
+  const handleAdd = async () => {
+    console.log('Panel');
+    const newNote = await addNewNote(notes);
+    dispatch(addNoteAction(newNote));
+  };
 
   return (
     <>
       <Box sx={{
         width: '360px',
+        maxWidth: '870px',
         height: '46px',
         background: '#EEEEEE',
         boxShadow: '0px -4px 10px rgba(1, 1, 1, 0.25)',
         borderRadius: '16px 16px 0px 0px',
         display: 'flex',
         justifyContent: 'center',
-        zIndex: 1000,
-        position: 'fixed', bottom: 0, left: 0, right: 0,
+        zIndex: 1111110101000,
       }}>
         {pathname !== '/notes'? <Link
           to={NOTES_ROUTE}
           style={{
             ...linkStyle,
           }}>
-          <img src={NoteLink} alt="N" style={{ ...size('18px', '25px') }}/>
+          <img src={NoteLink} alt="Note" style={{ ...size('18px', '25px') }}/>
         </Link> :
           <Box sx={{
             ...flex('row', 'center', 'center'),
@@ -59,15 +100,26 @@ const Panel = () => {
               style={{ ...linkStyle }}>
               <img src={Vector} alt="Home" style={{ ...size('18px', '25px') }}/>
             </Link>
-            <Button sx={{ ...linkStyle }}>
+            <Button sx={{ ...linkStyle }} onClick={handleOpen}>
               <img src={Menu} alt="Menu" style={{ ...size('18px', '25px') }}/>
             </Button>
-            <Button sx={{ ...linkStyle }}>
+            <Button sx={{ ...linkStyle }} onClick={handleAdd} className="add-btn">
               <img src={AddBtn} alt="AddBtn" style={{ ...size('18px', '25px') }}/>
             </Button>
           </Box>
         }
       </Box>
+      {/*<Drawer*/}
+      {/*  anchor="bottom"*/}
+      {/*  open={open}*/}
+      {/*  onClose={handleClose}*/}
+      {/*  sx={{*/}
+      {/*    background: 'rgba(254, 254, 254, 0.9)',*/}
+      {/*    boxShadow: '0px -5px 10px rgba(0, 0, 0, 0.25)',*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  {list()}*/}
+      {/*</Drawer>*/}
     </>
   );
 };

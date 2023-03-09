@@ -1,4 +1,5 @@
-import { INote, INoteCreate, ITagsUpdate } from '../types/note';
+import { INote, INoteCreate } from '../types/note';
+import { ITagsUpdate } from '../types/tag';
 import { $host } from './index';
 
 

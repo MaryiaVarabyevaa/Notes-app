@@ -19,6 +19,9 @@ const WelcomePage = () => {
       <Typography sx={{
         ...font('400', '85px', '126px', '0.05em', '#010101', 'inherit'),
         textTransform:' uppercase',
+        '@media (max-width: 360px)': {
+          ...font('400', '72px', '107px', '0.05em', '#010101', 'inherit'),
+        },
       }}
       >
         Welcome!

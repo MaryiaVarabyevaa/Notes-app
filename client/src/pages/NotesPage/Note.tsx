@@ -1,17 +1,18 @@
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { Box, Stack, TextField, Typography } from '@mui/material';
-import { INoteComponent } from '../../types/note';
+import { useDispatch, useSelector } from 'react-redux';
+import { INoteComponent, INoteState, IRootState } from '../../types/note';
 import { font } from '../../helpers/font';
 import { getTextItems } from '../../helpers/getTextItems';
 import { splitTag } from '../../helpers/splitTag';
 import { updateTags } from '../../http/noteAPI';
 import { getDate } from '../../helpers/getDate';
 import { cloneArray } from '../../helpers/cloneArray';
+import { updateNoteAction } from '../../store/noteReducer';
 
 const editText = (text: string, tag: string): string => {
   const textItems = getTextItems(text);
   const newText = textItems.map((item: string) => {
-    console.log(item.replace(/#/g, ''));
     if (item.includes('#') && item.replace(/#/g, '') === tag) {
       return item.replace(/#/g, '');
     }
@@ -20,11 +21,14 @@ const editText = (text: string, tag: string): string => {
   return newText.join(' ');
 };
 
+
 const Note =({ ...obj }: INoteComponent) => {
-  const { id, date, text, header, tags, editedItem,
-    editedNoteId, headerValue, setHeaderValue,
+  const { id, date, text, header, tags, color, queueNumber, editedItem, headerValue, setHeaderValue,
     textValue, setTextValue, contextMenuShown,
-    notes, setNotes } = obj;
+  } = obj;
+  const dispatch = useDispatch();
+  const notes = useSelector((state: IRootState) => state.noteReducer.notes);
+  const editedNoteId = useSelector((state: IRootState) => state.noteReducer.editedNoteId);
 
   useLayoutEffect(() => {
     if (id === editedNoteId) {
@@ -44,7 +48,16 @@ const Note =({ ...obj }: INoteComponent) => {
       copiedNotes[index].text = newText;
       copiedNotes[index].tags = newTags;
       copiedNotes[index].date = date;
-      setNotes(copiedNotes);
+      const updatedNote = {
+        id,
+        header,
+        text: newText,
+        tags: newTags,
+        date,
+        color,
+        queueNumber,
+      };
+      dispatch(updateNoteAction(updatedNote));
       await updateTags({
         id,
         date,
@@ -72,6 +85,7 @@ const Note =({ ...obj }: INoteComponent) => {
                   style: {
                     ...font('500', '24px', '36px', '0.05em', '#010101', 'inherit'),
                     padding: '0px',
+
                   },
                 }}
 
@@ -99,6 +113,9 @@ const Note =({ ...obj }: INoteComponent) => {
                 overflowX: 'auto',
                 whiteSpace: 'nowrap',
                 width: '331px',
+                '@media (max-width: 360px)': {
+                  ...font('500', '26px', '39px', '0.05em', '#010101', 'inherit'),
+                },
               }}>
                 { header }
               </Typography>
@@ -109,10 +126,13 @@ const Note =({ ...obj }: INoteComponent) => {
                 whiteSpace: 'pre-wrap',
                 wordBreak: 'break-word',
                 overflowY: 'auto',
+                '@media (max-width: 360px)': {
+                  ...font('400', '18px', '27px', '0.05em', '#010101', 'inherit'),
+                },
               }}
               >
                 {
-                  text.length === 0? '' : getTextItems(text).map((item: string, index) => {
+                  (text && text.length === 0)? '' : getTextItems(text).map((item: string, index) => {
                     return typeof item === 'string' && !item.includes('#')? item + ' ' : (
                       <>
                         {
@@ -142,7 +162,7 @@ const Note =({ ...obj }: INoteComponent) => {
         </Typography>
         <Box sx={{ display: 'flex', gap: '5px', minHeight: '22px' }}>
           {
-            tags.map((tag, index) => {
+            tags && tags.map((tag, index) => {
               return <Typography key={index} className="tag" sx={{
                 ...font('300', '14px', '21px', '0.05em', '#1B18B4','inherit'),
                 cursor: `${id === editedNoteId}`? 'pointer' : 'grab',
