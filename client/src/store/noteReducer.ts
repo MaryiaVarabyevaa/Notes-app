@@ -1,4 +1,5 @@
 import { INote, INoteAction, INoteState, NoteActionTypes } from '../types/note';
+import { cloneArray } from '../helpers/cloneArray';
 
 const defaultState: INoteState = {
   notes: [],
@@ -29,9 +30,8 @@ export const noteReducer = (state = defaultState, action: any): INoteState => {
     return { ...state, editedNoteId: action.payload };
   case NoteActionTypes.UPDATE_NOTE:
     const updatedId = action.payload.id as number;
-    const updatedNoteIndex = state.notes.findIndex((note: INote) => note.id === updatedId);
-    const copiedState = state.notes.slice();
-    copiedState[updatedNoteIndex] = action.payload;
+    const { index, copiedNotes: copiedState } = cloneArray(state.notes, updatedId);
+    copiedState[index] = action.payload;
     localStorage.setItem('notes', JSON.stringify(copiedState));
     return { ...state, notes: copiedState };
   case NoteActionTypes.RESTORE_FROM_STORAGE:

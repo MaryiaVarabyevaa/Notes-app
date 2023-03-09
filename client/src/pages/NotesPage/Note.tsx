@@ -9,6 +9,7 @@ import { updateTags } from '../../http/noteAPI';
 import { getDate } from '../../helpers/getDate';
 import { cloneArray } from '../../helpers/cloneArray';
 import { updateNoteAction } from '../../store/noteReducer';
+import { INoteProp } from '../../types/noteProp';
 
 const editText = (text: string, tag: string): string => {
   const textItems = getTextItems(text);
@@ -22,7 +23,7 @@ const editText = (text: string, tag: string): string => {
 };
 
 
-const Note =({ ...obj }: INoteComponent) => {
+const Note =({ ...obj }: INoteProp) => {
   const { id, date, text, header, tags, color, queueNumber, editedItem, headerValue, setHeaderValue,
     textValue, setTextValue, contextMenuShown,
   } = obj;
@@ -85,7 +86,6 @@ const Note =({ ...obj }: INoteComponent) => {
                   style: {
                     ...font('500', '24px', '36px', '0.05em', '#010101', 'inherit'),
                     padding: '0px',
-
                   },
                 }}
 
@@ -135,14 +135,9 @@ const Note =({ ...obj }: INoteComponent) => {
                   (text && text.length === 0)? '' : getTextItems(text).map((item: string, index) => {
                     return typeof item === 'string' && !item.includes('#')? item + ' ' : (
                       <>
-                        {
-                          splitTag(item).map((elem) => {
-                            return !elem.includes('#')? elem :
-                              <span key={index} style={{ color: elem.includes('#')? '#1B18B4' : 'inherit' }}>
-                                {elem.replace(/#/gi, '')}
-                              </span>;
-                          })
-                        }
+                        <span style={{ color: item.includes('#')? '#1B18B4' : 'inherit' }}>
+                          {item.replace(/#/gi, '') + ' '}
+                        </span>
                       </>
                     );
                   })

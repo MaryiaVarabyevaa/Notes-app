@@ -3,7 +3,7 @@ import { Box, Button, Drawer } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import NoteLink from '../assets/NoteLink.png';
-import Vector from '../assets/Vector.png';
+import Home from '../assets/Home.png';
 import Menu from '../assets/Menu.png';
 import AddBtn from '../assets/AddBtn.png';
 import { MAIN_ROUTE, NOTES_ROUTE } from '../constants/routes';
@@ -95,7 +95,7 @@ const Panel = () => {
             <Link
               to={MAIN_ROUTE}
               style={{ ...linkStyle }}>
-              <img src={Vector} alt="Home" style={{ ...size('18px', '25px') }}/>
+              <img src={Home} alt="Home" style={{ ...size('18px', '25px') }}/>
             </Link>
             <Button sx={{ ...linkStyle }} onClick={handleOpen}>
               <img src={Menu} alt="Menu" style={{ ...size('18px', '25px') }}/>

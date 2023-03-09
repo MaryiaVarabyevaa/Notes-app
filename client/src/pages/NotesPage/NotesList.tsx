@@ -247,7 +247,7 @@ const NotesList = () => {
             onMouseMove={handlerMouseMove}
             draggable={true}
             ref={index === notes.length - 1? lastNoteRef : null}
-            key={note.id} sx={{
+            key={index} sx={{
               bgcolor: `${note.color}`,
               padding: '8px 15px 8px 14px',
               ...flex('column', 'space-between'),

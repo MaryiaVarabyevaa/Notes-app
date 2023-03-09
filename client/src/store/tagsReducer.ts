@@ -1,5 +1,4 @@
 import { ITagAction, ITagState, TagActionTypes } from '../types/tag';
-import { INoteAction, NoteActionTypes } from '../types/note';
 
 
 const defaultState: ITagState = {

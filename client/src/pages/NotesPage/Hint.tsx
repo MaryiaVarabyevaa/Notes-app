@@ -2,11 +2,8 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { size } from '../../helpers/size';
 import { font } from '../../helpers/font';
+import { IHintProps } from '../../types/hintProp';
 
-interface IHintProps {
-    x: number;
-    y: number;
-}
 
 const Hint = ({ x, y }: IHintProps) => {
   return (
