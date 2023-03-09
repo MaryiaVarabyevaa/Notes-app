@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Notes } from './notes.entity';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
-import { Op, Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
 import { UpdateTagsDto } from './dto/update-tags.dto';
 
 @Injectable()

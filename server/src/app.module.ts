@@ -19,6 +19,10 @@ import { Notes } from './notes/notes.entity';
       models: [Notes],
       autoLoadModels: true,
       synchronize: true,
+      dialectOptions: {
+        ssl: true,
+        native: true,
+      },
     }),
     NotesModule,
   ],
