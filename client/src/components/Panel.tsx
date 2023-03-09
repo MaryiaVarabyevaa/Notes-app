@@ -11,7 +11,7 @@ import { size } from '../helpers/size';
 import { flex } from '../helpers/flex';
 import { getUniqueTags } from '../http/noteAPI';
 import { IRootState } from '../types/note';
-import { setTagsAction } from '../store/tagsReducer';
+import { setCurrentTagAction, setTagsAction } from '../store/tagsReducer';
 import { addNoteAction } from '../store/noteReducer';
 import { addNewNote } from '../helpers/addNewNote';
 import SearchBar from './SearchBar';
@@ -35,6 +35,7 @@ const Panel = () => {
   const dispatch = useDispatch();
   const handleOpen = () => {
     setOpen(true);
+    dispatch(setCurrentTagAction(''));
   };
 
   const handleClose = () => {
@@ -57,16 +58,12 @@ const Panel = () => {
         background: 'rgba(254, 254, 254, 0.9)',
         boxShadow: '0px -5px 10px rgba(0, 0, 0, 0.25)',
       }}
-      // role="presentation"
-      // onClick={handleClose}
-      onKeyDown={handleClose}
     >
-      <SearchBar />
+      <SearchBar handleClose={handleClose} />
     </Box>
   );
 
   const handleAdd = async () => {
-    console.log('Panel');
     const newNote = await addNewNote(notes);
     dispatch(addNoteAction(newNote));
   };
@@ -109,17 +106,17 @@ const Panel = () => {
           </Box>
         }
       </Box>
-      {/*<Drawer*/}
-      {/*  anchor="bottom"*/}
-      {/*  open={open}*/}
-      {/*  onClose={handleClose}*/}
-      {/*  sx={{*/}
-      {/*    background: 'rgba(254, 254, 254, 0.9)',*/}
-      {/*    boxShadow: '0px -5px 10px rgba(0, 0, 0, 0.25)',*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  {list()}*/}
-      {/*</Drawer>*/}
+      <Drawer
+        anchor="bottom"
+        open={open}
+        onClose={handleClose}
+        sx={{
+          background: 'rgba(254, 254, 254, 0.9)',
+          boxShadow: '0px -5px 10px rgba(0, 0, 0, 0.25)',
+        }}
+      >
+        {list()}
+      </Drawer>
     </>
   );
 };

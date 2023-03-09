@@ -1,4 +1,4 @@
-import React, { useState, MouseEvent, useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import { AppBar, Box, Toolbar } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { MAIN_ROUTE, NOTES_ROUTE } from '../constants/routes';

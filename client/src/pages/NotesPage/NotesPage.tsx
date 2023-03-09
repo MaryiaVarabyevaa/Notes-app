@@ -18,21 +18,8 @@ const NotesPage = () => {
   const notes = useSelector((state: IRootState) => state.noteReducer.notes);
   const currentTag = useSelector((state: IRootState) => state.tagsReducer.currentTag);
   const dispatch = useDispatch();
-    // const [currentPage, setCurrentPage] = useState();
-    // const [fetching, setFetching] = useState(true);
-    //
-    // useEffect(() =>{
-    //   const box = document.body.querySelector('.box') as HTMLElement;
-    //   box.addEventListener('scroll', scrollHandler);
-    //   return () => box.addEventListener('scroll', scrollHandler);
-    // }, []);
-    //
-    // const scrollHandler = (e: any) => {
-    //   console.log('scroll');
-    // };
 
-
-    const getAllNotes = async (): Promise<INote[]> => {
+  const getAllNotes = async (): Promise<INote[]> => {
     const hashTag = currentTag? currentTag : '';
     const notes = await getNotes(hashTag);
     return notes;
@@ -72,7 +59,7 @@ const NotesPage = () => {
     }}
     >
       {
-        width > 360 && <SearchBar />
+        width > 360 && <SearchBar handleClose={() => {}} />
       }
       <NotesList />
     </Box>

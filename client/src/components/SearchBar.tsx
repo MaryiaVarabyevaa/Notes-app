@@ -19,20 +19,21 @@ const CssTextField = styled(TextField)({
     '& fieldset': {
       borderColor: '#858585',
     },
-    // '&:hover fieldset': {
-    //   borderColor: '#85E0A3',
-    // },
     '&.Mui-focused fieldset': {
       borderColor: 'green',
     },
   },
 });
 
-const SearchBar = () => {
+interface Prop {
+  handleClose: () => void;
+}
+const SearchBar = ({ handleClose }: Prop) => {
   const dispatch = useDispatch();
   const tags = useSelector((state: IRootState) => state.tagsReducer.tags);
   const handleClick = (value: string) => {
     dispatch(setCurrentTagAction(value));
+    handleClose();
   };
 
   return <>
