@@ -1,10 +1,9 @@
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { Box, Stack, TextField, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { INoteComponent, INoteState, IRootState } from '../../types/note';
+import { IRootState } from '../../types/note';
 import { font } from '../../helpers/font';
 import { getTextItems } from '../../helpers/getTextItems';
-import { splitTag } from '../../helpers/splitTag';
 import { updateTags } from '../../http/noteAPI';
 import { getDate } from '../../helpers/getDate';
 import { cloneArray } from '../../helpers/cloneArray';

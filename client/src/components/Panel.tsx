@@ -12,7 +12,7 @@ import { flex } from '../helpers/flex';
 import { getUniqueTags } from '../http/noteAPI';
 import { IRootState } from '../types/note';
 import { setCurrentTagAction, setTagsAction } from '../store/tagsReducer';
-import { addNoteAction } from '../store/noteReducer';
+import { addNoteAction, setEditedNoteIdAction } from '../store/noteReducer';
 import { addNewNote } from '../helpers/addNewNote';
 import SearchBar from './SearchBar';
 

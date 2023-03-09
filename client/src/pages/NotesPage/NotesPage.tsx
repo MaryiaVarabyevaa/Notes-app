@@ -5,7 +5,7 @@ import { getNotes, getUniqueTags } from '../../http/noteAPI';
 import { INote, INoteState, IRootState } from '../../types/note';
 import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import SearchBar from '../../components/SearchBar';
-import { addNoteAction, setNotesAction } from '../../store/noteReducer';
+import { addNoteAction, setNotesAction, updateNotesAction } from '../../store/noteReducer';
 import { ITagState } from '../../types/tag';
 import { setTagsAction } from '../../store/tagsReducer';
 import NotesList from './NotesList';
@@ -29,7 +29,6 @@ const NotesPage = () => {
     const tags = await getUniqueTags();
     return tags;
   };
-
   useEffect(() => {
     getAllNotes().then((notes) => dispatch(setNotesAction(Array.from(notes))));
   },[currentTag]);

@@ -24,6 +24,7 @@ export const updateQueueNumber = async (notes: INote[]): Promise<void> => {
 
 export const updateNoteInfo = async (note: INote): Promise<void> => {
   const { data } = await $host.put('notes/update', note);
+  return data;
 };
 
 export const updateTags = async (note: ITagsUpdate): Promise<void> => {

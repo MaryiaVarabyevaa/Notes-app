@@ -13,8 +13,6 @@ import { cloneArray } from '../../helpers/cloneArray';
 import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import { addNoteAction, setEditedNoteIdAction, setNotesAction, updateNoteAction } from '../../store/noteReducer';
 import { addNewNote } from '../../helpers/addNewNote';
-import { size } from '../../helpers/size';
-import { font } from '../../helpers/font';
 import Note from './Note';
 import ContextMenu from './ContextMenu';
 import Hint from './Hint';
@@ -38,6 +36,7 @@ const initialHint: IInitialContextMenu = {
   y: 0,
 };
 
+
 const NotesList = () => {
   const [editedItem, setEditedItem] = useState<HTMLElement | null>(null);
   const [currentNote, setCurrentNote] = useState<INote | null>(null);
@@ -52,19 +51,6 @@ const NotesList = () => {
   const editedNoteId = useSelector((state: IRootState) => state.noteReducer.editedNoteId);
   const { width } = useWindowDimensions();
 
-  // const [notesList, setNotesList] = useState();
-  // const [currentPage, setCurrentPage] = useState();
-  // const [fetching, setFetching] = useState(true);
-  //
-  // useEffect(() =>{
-  //   const box = document.body.querySelector('.box') as HTMLElement;
-  //   box.addEventListener('scroll', scrollHandler);
-  //   return () => box.addEventListener('scroll', scrollHandler);
-  // }, []);
-  //
-  // const scrollHandler = (e: any) => {
-  //   console.log('scroll');
-  // };
 
   const handleAddBtnClick = async(): Promise<void> => {
     if (editedItem && editedNoteId) {
@@ -152,6 +138,13 @@ const NotesList = () => {
       lastNoteRef.current.style.boxShadow = '0 0 10px green';
       setEditedItem(lastNoteRef.current);
     }
+    if (editedItem && lastNoteRef.current) {
+      lastNoteRef.current.style.boxShadow = '0';
+      // lastNoteRef.current.style.boxShadow = '';
+      // editedItem.style.boxShadow = '';
+      // setEditedItem(null);
+      // dispatch(setEditedNoteIdAction(null));
+    }
   }, [isAdded]);
 
   useEffect(() => {
@@ -198,16 +191,16 @@ const NotesList = () => {
   let timer: ReturnType<typeof setTimeout>;
 
   const handlerMouseMove = (e: MouseEvent) => {
-    // e.preventDefault();
-    // const { pageY, pageX } = e;
-    // const elem = e.target as HTMLElement;
-    // elem.style.cursor = 'grab';
-    // setHint(initialHint);
-    // clearTimeout(timer);
-    // timer = setTimeout(() => {
-    //   elem.style.cursor = 'default';
-    //   setHint({ show: true, x: pageX + 10, y: pageY + 10 } );
-    // }, 3000);
+    e.preventDefault();
+    const { pageY, pageX } = e;
+    const elem = e.target as HTMLElement;
+    elem.style.cursor = 'grab';
+    setHint(initialHint);
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      elem.style.cursor = 'default';
+      setHint({ show: true, x: pageX + 10, y: pageY + 10 } );
+    }, 3000);
   };
 
 
@@ -245,6 +238,7 @@ const NotesList = () => {
             onDragOver={(e) => dragOverHandler(e)}
             onDrop={(e) => dropHandler(e, note)}
             onMouseMove={handlerMouseMove}
+            onMouseOut={() => setHint(initialHint)}
             draggable={true}
             ref={index === notes.length - 1? lastNoteRef : null}
             key={index} sx={{
