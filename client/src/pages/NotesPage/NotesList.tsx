@@ -2,7 +2,7 @@ import React, { DragEvent, MouseEvent, useEffect, useRef, useState } from 'react
 import { Box, IconButton, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useDispatch, useSelector } from 'react-redux';
-import { Reorder, useMotionValue } from 'framer-motion';
+import { animate, MotionValue, Reorder, useMotionValue } from 'framer-motion';
 import { motion } from 'framer-motion';
 import { updateNoteInfo, updateQueueNumber } from '../../http/noteAPI';
 import { INote, IRootState } from '../../types/note';
@@ -36,6 +36,63 @@ const initialHint: IInitialContextMenu = {
   y: 0,
 };
 
+const arr: any[] = [
+  {
+    id: 1,
+    header: 'first header',
+    text: 'text new description',
+    tags: [],
+    queueNumber: 1,
+    date: '2023.03.09',
+    color: '#FFAFA3',
+  },
+  {
+    id: 2,
+    header: 'second header',
+    text: 'text new description',
+    tags: [],
+    queueNumber: 2,
+    date: '2023.03.09',
+    color: '#80CAFF',
+  },
+  {
+    id: 3,
+    header: 'third header',
+    text: 'text new description',
+    tags: [],
+    queueNumber: 3,
+    date: '2023.03.09',
+    color: '#FFAFA3',
+  },
+];
+
+
+const inactiveShadow = '0px 0px 0px rgba(0,0,0,0.8)';
+
+export function useRaisedShadow(value: MotionValue<number>) {
+  const boxShadow = useMotionValue(inactiveShadow);
+
+  useEffect(() => {
+    let isActive = false;
+    value.onChange((latest: number) => {
+      const wasActive = isActive;
+      if (latest !== 0) {
+        isActive = true;
+        if (isActive !== wasActive) {
+          animate(boxShadow, '5px 5px 10px rgba(0,0,0,0.3)');
+        }
+      } else {
+        isActive = false;
+        if (isActive !== wasActive) {
+          animate(boxShadow, inactiveShadow);
+        }
+      }
+    });
+  }, [value, boxShadow]);
+
+  return boxShadow;
+}
+
 
 const NotesList = () => {
   const [editedItem, setEditedItem] = useState<HTMLElement | null>(null);
@@ -51,6 +108,9 @@ const NotesList = () => {
   const editedNoteId = useSelector((state: IRootState) => state.noteReducer.editedNoteId);
   const { width } = useWindowDimensions();
 
+  const [items, setItems] = useState(arr);
+  const y = useMotionValue(0);
+  const boxShadow = useRaisedShadow(y);
 
   const handleAddBtnClick = async(): Promise<void> => {
     if (editedItem && editedNoteId) {
@@ -63,21 +123,21 @@ const NotesList = () => {
   };
 
   const updateNote = async (newColor?: string): Promise<void> => {
-    if (editedNoteId) {
-      const { index, copiedNotes } = cloneArray(notes, editedNoteId);
-      const newNote: INote = {
-        id: editedNoteId as number,
-        header: headerValue,
-        text: textValue,
-        tags: getTags(textValue),
-        queueNumber: notes[index].queueNumber,
-        date: getDate(),
-        color: newColor? newColor : notes[index].color,
-      };
-      await updateNoteInfo(newNote);
-      dispatch(updateNoteAction(newNote));
-      copiedNotes[index] = newNote;
-    }
+    // if (editedNoteId) {
+    //   const { index, copiedNotes } = cloneArray(notes, editedNoteId);
+    //   const newNote: INote = {
+    //     id: editedNoteId as number,
+    //     header: headerValue,
+    //     text: textValue,
+    //     tags: getTags(textValue),
+    //     queueNumber: notes[index].queueNumber,
+    //     date: getDate(),
+    //     color: newColor? newColor : notes[index].color,
+    //   };
+    //   await updateNoteInfo(newNote);
+    //   dispatch(updateNoteAction(newNote));
+    //   copiedNotes[index] = newNote;
+    // }
   };
 
   const handleClick = async (e: Event) => {
@@ -138,13 +198,13 @@ const NotesList = () => {
       lastNoteRef.current.style.boxShadow = '0 0 10px green';
       setEditedItem(lastNoteRef.current);
     }
-    if (editedItem && lastNoteRef.current) {
-      lastNoteRef.current.style.boxShadow = '0';
-      // lastNoteRef.current.style.boxShadow = '';
-      // editedItem.style.boxShadow = '';
-      // setEditedItem(null);
-      // dispatch(setEditedNoteIdAction(null));
-    }
+    // if (editedItem && lastNoteRef.current) {
+    //   lastNoteRef.current.style.boxShadow = '0';
+    //   // lastNoteRef.current.style.boxShadow = '';
+    //   // editedItem.style.boxShadow = '';
+    //   // setEditedItem(null);
+    //   // dispatch(setEditedNoteIdAction(null));
+    // }
   }, [isAdded]);
 
   useEffect(() => {
@@ -190,19 +250,30 @@ const NotesList = () => {
 
   let timer: ReturnType<typeof setTimeout>;
 
-  const handlerMouseMove = (e: MouseEvent) => {
+
+
+  const handlerMouseMove = (e: any) => {
     e.preventDefault();
-    const { pageY, pageX } = e;
     const elem = e.target as HTMLElement;
-    elem.style.cursor = 'grab';
-    setHint(initialHint);
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      elem.style.cursor = 'default';
-      setHint({ show: true, x: pageX + 10, y: pageY + 10 } );
-    }, 3000);
+    if (elem.querySelector('.container') === elem || elem.closest('.container')) {
+      const { pageY, pageX } = e;
+      elem.style.cursor = 'grab';
+      clearTimeout(timer);
+      setHint(initialHint);
+      timer = setTimeout(() => {
+        elem.style.cursor = 'default';
+        setHint({ show: true, x: pageX + 10, y: pageY + 10 } );
+      }, 3000);
+    }
   };
 
+  useEffect(() => {
+    const box = document.body.querySelector('.box');
+    if (box) {
+      box.addEventListener('mousemove', handlerMouseMove);
+      return () => box.removeEventListener('mousemove', handlerMouseMove);
+    }
+  }, []);
 
   return (
     <Box sx={{ display: 'flex', gap: '30px',
@@ -237,8 +308,7 @@ const NotesList = () => {
             onDragStart={(e) => dragStartHandle(e, note)}
             onDragOver={(e) => dragOverHandler(e)}
             onDrop={(e) => dropHandler(e, note)}
-            onMouseMove={handlerMouseMove}
-            onMouseOut={() => setHint(initialHint)}
+            // onMouseMove={handlerMouseMove}
             draggable={true}
             ref={index === notes.length - 1? lastNoteRef : null}
             key={index} sx={{
@@ -296,8 +366,12 @@ const NotesList = () => {
             updateNote={updateNote}
           />
       }
+      {/*{*/}
+      {/*  hint.show && !contextMenu.show &&*/}
+      {/*    <Hint x={hint.x} y={hint.y} />*/}
+      {/*}*/}
       {
-        hint.show && !contextMenu.show &&
+        (hint.show && !contextMenu.show) &&
           <Hint x={hint.x} y={hint.y} />
       }
     </Box>

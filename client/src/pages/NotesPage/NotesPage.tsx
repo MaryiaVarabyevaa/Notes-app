@@ -35,6 +35,7 @@ const NotesPage = () => {
 
   useEffect(() => {
     getTags().then((tags) => dispatch(setTagsAction(Array.from(tags))));
+
   }, [notes]);
 
   return (
