@@ -2,13 +2,13 @@ import React from 'react';
 import { Box, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { size } from '../../helpers/size';
-import { colors } from '../../helpers/getColor';
 import { font } from '../../helpers/font';
 import { deleteNote } from '../../http/noteAPI';
 import { IRootState } from '../../types/note';
 import { cloneArray } from '../../helpers/cloneArray';
 import { updateNotesAction } from '../../store/noteReducer';
 import { IContextMenu } from '../../types/contextMenu';
+import { colors } from '../../constants/colors';
 
 const ContextMenu = ({ x, y, id, closeContextMenu, updateNote }: IContextMenu) => {
   const dispatch = useDispatch();

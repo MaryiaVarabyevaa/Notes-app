@@ -1,7 +1,5 @@
+import { HASH, REG_EXP } from '../constants/tags';
 import { getTextItems } from './getTextItems';
-
-const REG_EXP: RegExp = /^[a-zA-Z0-9#_-]+$/;
-const HASH: string = '#';
 
 export const getTags = (text: string): string[] => {
   const items: string[] = getTextItems(text);

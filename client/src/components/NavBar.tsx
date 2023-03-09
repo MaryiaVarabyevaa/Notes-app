@@ -1,21 +1,8 @@
 import React, { useEffect } from 'react';
 import { AppBar, Box, Toolbar } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
-import { MAIN_ROUTE, NOTES_ROUTE } from '../constants/routes';
-import { ILink } from '../types/navBar';
 import { font } from '../helpers/font';
-
-const links: ILink[] = [
-  {
-    text: 'Home',
-    link: MAIN_ROUTE,
-  },
-  {
-    text: 'Notes',
-    link: NOTES_ROUTE,
-  },
-];
-
+import { links } from '../constants/links';
 
 const NavBar = () => {
   const { pathname } = useLocation();

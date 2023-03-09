@@ -1,5 +1,4 @@
-
-export const colors = ['#FFAFA3', '#80CAFF', '#FFD966', '#85E0A3', '#D9B8FF', '#FFC470'];
+import { colors } from '../constants/colors';
 
 export const getColor = (color: string): string => {
   if (color === '') return colors[0];

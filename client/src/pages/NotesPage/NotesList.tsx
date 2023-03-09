@@ -1,9 +1,7 @@
-import React, { DragEvent, MouseEvent, useEffect, useRef, useState } from 'react';
-import { Box, IconButton, Typography } from '@mui/material';
+import React, { DragEvent, useEffect, useRef, useState } from 'react';
+import { Box, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useDispatch, useSelector } from 'react-redux';
-import { animate, MotionValue, Reorder, useMotionValue } from 'framer-motion';
-import { motion } from 'framer-motion';
 import { updateNoteInfo, updateQueueNumber } from '../../http/noteAPI';
 import { INote, IRootState } from '../../types/note';
 import { flex } from '../../helpers/flex';
@@ -13,85 +11,13 @@ import { cloneArray } from '../../helpers/cloneArray';
 import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import { addNoteAction, setEditedNoteIdAction, setNotesAction, updateNoteAction } from '../../store/noteReducer';
 import { addNewNote } from '../../helpers/addNewNote';
+import { IInitialContextMenu } from '../../types/contextMenu';
+import { initialHint } from '../../constants/initialHint';
+import { initialContextMenu } from '../../constants/initialContextMenu';
 import Note from './Note';
 import ContextMenu from './ContextMenu';
 import Hint from './Hint';
 
-interface IInitialContextMenu {
-  show: boolean;
-  x: number;
-  y: number;
-}
-
-const initialContextMenu: IInitialContextMenu = {
-  show: false,
-  x: 0,
-  y: 0,
-};
-
-
-const initialHint: IInitialContextMenu = {
-  show: false,
-  x: 0,
-  y: 0,
-};
-
-const arr: any[] = [
-  {
-    id: 1,
-    header: 'first header',
-    text: 'text new description',
-    tags: [],
-    queueNumber: 1,
-    date: '2023.03.09',
-    color: '#FFAFA3',
-  },
-  {
-    id: 2,
-    header: 'second header',
-    text: 'text new description',
-    tags: [],
-    queueNumber: 2,
-    date: '2023.03.09',
-    color: '#80CAFF',
-  },
-  {
-    id: 3,
-    header: 'third header',
-    text: 'text new description',
-    tags: [],
-    queueNumber: 3,
-    date: '2023.03.09',
-    color: '#FFAFA3',
-  },
-];
-
-
-const inactiveShadow = '0px 0px 0px rgba(0,0,0,0.8)';
-
-export function useRaisedShadow(value: MotionValue<number>) {
-  const boxShadow = useMotionValue(inactiveShadow);
-
-  useEffect(() => {
-    let isActive = false;
-    value.onChange((latest: number) => {
-      const wasActive = isActive;
-      if (latest !== 0) {
-        isActive = true;
-        if (isActive !== wasActive) {
-          animate(boxShadow, '5px 5px 10px rgba(0,0,0,0.3)');
-        }
-      } else {
-        isActive = false;
-        if (isActive !== wasActive) {
-          animate(boxShadow, inactiveShadow);
-        }
-      }
-    });
-  }, [value, boxShadow]);
-
-  return boxShadow;
-}
 
 
 const NotesList = () => {
@@ -108,9 +34,6 @@ const NotesList = () => {
   const editedNoteId = useSelector((state: IRootState) => state.noteReducer.editedNoteId);
   const { width } = useWindowDimensions();
 
-  const [items, setItems] = useState(arr);
-  const y = useMotionValue(0);
-  const boxShadow = useRaisedShadow(y);
 
   const handleAddBtnClick = async(): Promise<void> => {
     if (editedItem && editedNoteId) {
@@ -123,21 +46,21 @@ const NotesList = () => {
   };
 
   const updateNote = async (newColor?: string): Promise<void> => {
-    // if (editedNoteId) {
-    //   const { index, copiedNotes } = cloneArray(notes, editedNoteId);
-    //   const newNote: INote = {
-    //     id: editedNoteId as number,
-    //     header: headerValue,
-    //     text: textValue,
-    //     tags: getTags(textValue),
-    //     queueNumber: notes[index].queueNumber,
-    //     date: getDate(),
-    //     color: newColor? newColor : notes[index].color,
-    //   };
-    //   await updateNoteInfo(newNote);
-    //   dispatch(updateNoteAction(newNote));
-    //   copiedNotes[index] = newNote;
-    // }
+    if (editedNoteId) {
+      const { index, copiedNotes } = cloneArray(notes, editedNoteId);
+      const newNote: INote = {
+        id: editedNoteId as number,
+        header: headerValue,
+        text: textValue,
+        tags: getTags(textValue),
+        queueNumber: notes[index].queueNumber,
+        date: getDate(),
+        color: newColor? newColor : notes[index].color,
+      };
+      await updateNoteInfo(newNote);
+      dispatch(updateNoteAction(newNote));
+      copiedNotes[index] = newNote;
+    }
   };
 
   const handleClick = async (e: Event) => {
@@ -255,7 +178,8 @@ const NotesList = () => {
   const handlerMouseMove = (e: any) => {
     e.preventDefault();
     const elem = e.target as HTMLElement;
-    if (elem.querySelector('.container') === elem || elem.closest('.container')) {
+    const container = elem.querySelector('.container');
+    if (container === elem || elem.closest('.container')) {
       const { pageY, pageX } = e;
       elem.style.cursor = 'grab';
       clearTimeout(timer);
@@ -264,13 +188,18 @@ const NotesList = () => {
         elem.style.cursor = 'default';
         setHint({ show: true, x: pageX + 10, y: pageY + 10 } );
       }, 3000);
+    } else {
+      clearTimeout(timer);
+      setHint(initialHint);
     }
+
   };
 
   useEffect(() => {
     const box = document.body.querySelector('.box');
     if (box) {
       box.addEventListener('mousemove', handlerMouseMove);
+
       return () => box.removeEventListener('mousemove', handlerMouseMove);
     }
   }, []);
@@ -308,7 +237,6 @@ const NotesList = () => {
             onDragStart={(e) => dragStartHandle(e, note)}
             onDragOver={(e) => dragOverHandler(e)}
             onDrop={(e) => dropHandler(e, note)}
-            // onMouseMove={handlerMouseMove}
             draggable={true}
             ref={index === notes.length - 1? lastNoteRef : null}
             key={index} sx={{
@@ -366,10 +294,6 @@ const NotesList = () => {
             updateNote={updateNote}
           />
       }
-      {/*{*/}
-      {/*  hint.show && !contextMenu.show &&*/}
-      {/*    <Hint x={hint.x} y={hint.y} />*/}
-      {/*}*/}
       {
         (hint.show && !contextMenu.show) &&
           <Hint x={hint.x} y={hint.y} />

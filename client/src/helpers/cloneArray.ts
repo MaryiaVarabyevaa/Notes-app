@@ -1,9 +1,5 @@
 import { INote } from '../types/note';
-
-interface ICloneArray {
-    index: number;
-    copiedNotes: INote[];
-}
+import { ICloneArray } from '../types/cloneArray';
 
 export const cloneArray = (notes: INote[], id: number): ICloneArray => {
   const index: number = notes.findIndex((note) => note.id === id);

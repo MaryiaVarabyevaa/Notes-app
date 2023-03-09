@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { font } from '../helpers/font';
 import { IRootState } from '../types/note';
 import { setCurrentTagAction } from '../store/tagsReducer';
+import { ISearchBarProp } from '../types/searchBarProp';
 
 
 const CssTextField = styled(TextField)({
@@ -25,10 +26,8 @@ const CssTextField = styled(TextField)({
   },
 });
 
-interface Prop {
-  handleClose: () => void;
-}
-const SearchBar = ({ handleClose }: Prop) => {
+
+const SearchBar = ({ handleClose }: ISearchBarProp) => {
   const dispatch = useDispatch();
   const tags = useSelector((state: IRootState) => state.tagsReducer.tags);
   const handleClick = (value: string) => {

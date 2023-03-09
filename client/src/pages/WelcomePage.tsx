@@ -2,8 +2,9 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { font } from '../helpers/font';
 import { flex } from '../helpers/flex';
+import { headerLen } from '../constants/headerLen';
 
-const headerLength = '80px';
+
 
 const WelcomePage = () => {
 
@@ -13,7 +14,7 @@ const WelcomePage = () => {
         ...flex('row', 'center', 'center'),
       }}
       style={{
-        minHeight: `calc(100vh - ${headerLength})`,
+        minHeight: `calc(100vh - ${headerLen})`,
       }}
     >
       <Typography sx={{

@@ -1,4 +1,4 @@
-const HASH: string = '#';
+import { HASH } from '../constants/tags';
 
 export const getTextItems = (text: string): string[] => {
   if (!text) return [];

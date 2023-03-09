@@ -1,9 +1,5 @@
-interface IFlex {
-    display: string;
-    flexDirection: string;
-    justifyContent: string;
-    alignItems?: string;
-}
+import { IFlex } from '../types/flex';
+
 
 export const flex = ( flexDirection: string, justifyContent: string, alignItems?: string): IFlex => {
   const flexObj: IFlex = { display: 'flex', flexDirection, justifyContent };
