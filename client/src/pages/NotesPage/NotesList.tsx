@@ -52,19 +52,19 @@ const NotesList = () => {
   const editedNoteId = useSelector((state: IRootState) => state.noteReducer.editedNoteId);
   const { width } = useWindowDimensions();
 
-  const [notesList, setNotesList] = useState();
-  const [currentPage, setCurrentPage] = useState();
-  const [fetching, setFetching] = useState(true);
-
-  useEffect(() =>{
-    const box = document.body.querySelector('.box') as HTMLElement;
-    box.addEventListener('scroll', scrollHandler);
-    return () => box.addEventListener('scroll', scrollHandler);
-  }, []);
-
-  const scrollHandler = (e: any) => {
-    console.log('scroll');
-  };
+  // const [notesList, setNotesList] = useState();
+  // const [currentPage, setCurrentPage] = useState();
+  // const [fetching, setFetching] = useState(true);
+  //
+  // useEffect(() =>{
+  //   const box = document.body.querySelector('.box') as HTMLElement;
+  //   box.addEventListener('scroll', scrollHandler);
+  //   return () => box.addEventListener('scroll', scrollHandler);
+  // }, []);
+  //
+  // const scrollHandler = (e: any) => {
+  //   console.log('scroll');
+  // };
 
   const handleAddBtnClick = async(): Promise<void> => {
     if (editedItem && editedNoteId) {
@@ -213,24 +213,10 @@ const NotesList = () => {
 
   return (
     <Box sx={{ display: 'flex', gap: '30px',
-      // maxHeight: '100px',
-      // height: '60vh',
-      // flexGrow: 1,
-      // maxHeight: '600px',
       height: '620px',
-      // height: 'auto',
       overflowY: 'auto',
-      // overflowX: 'auto',
-      // whiteSpace: 'nowrap',
       '@media (max-width: 870px)': {
         height: 'auto',
-        // flex: '0 0 600px',
-        // height: '600px',
-        // width: '360px',
-        // overflowY: 'auto',
-        // overflowX: 'auto',
-        // whiteSpace: 'nowrap',
-        // overflowY: 'hidden',
         flexDirection: 'column',
       },
     }}>
@@ -268,10 +254,8 @@ const NotesList = () => {
               flex: '0 0 360px',
               cursor: 'grab',
               height: '600px',
-              '@media (max-width: 360px)': {
+              '@media (max-width: 870px)': {
                 width: '360px',
-                // flex: '0 0 600px',
-                // maxHeight: '600px',
               },
             }}>
             <Note { ...{
@@ -289,11 +273,8 @@ const NotesList = () => {
       {
         width > 360 && <Box sx={{
           border: '5px dashed #85E0A3',
-          // ...size('360px', '600px'),
-          // maxHeight: '600px',
           ...flex('row', 'center', 'center'),
           flex: '0 0 360px',
-          // marginTop: '10px',
           margin: '10px 0',
           '@media (max-width: 870px)': {
             flex: '0 1 200px',
