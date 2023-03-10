@@ -101,7 +101,7 @@ const Panel = () => {
               <img src={Menu} alt="Menu" style={{ ...size('18px', '25px') }}/>
             </Button>
             <Button sx={{ ...linkStyle }} onClick={handleAdd} className="add-btn">
-              <img src={AddBtn} alt="AddBtn" style={{ ...size('18px', '25px') }}/>
+              <img src={AddBtn} alt="AddBtn" className="add-btn" style={{ ...size('18px', '25px') }}/>
             </Button>
           </Box>
         }

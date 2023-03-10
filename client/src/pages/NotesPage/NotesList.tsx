@@ -46,6 +46,7 @@ const NotesList = () => {
   };
 
   const updateNote = async (newColor?: string): Promise<void> => {
+    console.log(textValue);
     if (editedNoteId) {
       const { index, copiedNotes } = cloneArray(notes, editedNoteId);
       const newNote: INote = {
@@ -76,7 +77,7 @@ const NotesList = () => {
       dispatch(setEditedNoteIdAction(+id));
       if (container) container.style.boxShadow = '0 0 10px green';
     }
-    if (editedItem != null && container === editedItem ) {
+    if (editedItem != null && container === editedItem) {
       container.style.boxShadow = '0 0 10px green';
       return;
     }
@@ -121,13 +122,9 @@ const NotesList = () => {
       lastNoteRef.current.style.boxShadow = '0 0 10px green';
       setEditedItem(lastNoteRef.current);
     }
-    // if (editedItem && lastNoteRef.current) {
-    //   lastNoteRef.current.style.boxShadow = '0';
-    //   // lastNoteRef.current.style.boxShadow = '';
-    //   // editedItem.style.boxShadow = '';
-    //   // setEditedItem(null);
-    //   // dispatch(setEditedNoteIdAction(null));
-    // }
+    if (editedItem && lastNoteRef.current) {
+
+    }
   }, [isAdded]);
 
   useEffect(() => {
@@ -187,7 +184,7 @@ const NotesList = () => {
       timer = setTimeout(() => {
         elem.style.cursor = 'default';
         setHint({ show: true, x: pageX + 10, y: pageY + 10 } );
-      }, 3000);
+      }, 4000);
     } else {
       clearTimeout(timer);
       setHint(initialHint);
@@ -197,7 +194,7 @@ const NotesList = () => {
 
   useEffect(() => {
     const box = document.body.querySelector('.box');
-    if (box) {
+    if (box && width > 360) {
       box.addEventListener('mousemove', handlerMouseMove);
 
       return () => box.removeEventListener('mousemove', handlerMouseMove);

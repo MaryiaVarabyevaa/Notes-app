@@ -10,6 +10,8 @@ import { cloneArray } from '../../helpers/cloneArray';
 import { updateNoteAction } from '../../store/noteReducer';
 import { INoteProp } from '../../types/noteProp';
 import { editText } from '../../helpers/editText';
+import { splitTag } from '../../helpers/splitTag';
+import { HASH } from '../../constants/tags';
 
 
 
@@ -57,6 +59,7 @@ const Note =({ ...obj }: INoteProp) => {
       });
     }
   };
+
 
   return (
     <>
@@ -123,11 +126,16 @@ const Note =({ ...obj }: INoteProp) => {
               >
                 {
                   (text && text.length === 0)? '' : getTextItems(text).map((item: string, index) => {
-                    return typeof item === 'string' && !item.includes('#')? item + ' ' : (
+                    return typeof item === 'string' && !item.startsWith('#')? item + ' ' : (
                       <>
-                        <span style={{ color: item.includes('#')? '#1B18B4' : 'inherit' }}>
-                          {item.replace(/#/gi, '') + ' '}
-                        </span>
+                        {
+                          splitTag(item).map((tagItem: string) => {
+                            return !tagItem.startsWith(HASH)? <>{ tagItem }</> :
+                              <span key={new Date().valueOf()} style={{ color: item.startsWith('#')? '#1B18B4' : 'inherit' }}>
+                                { tagItem.replace(/#/gi, '') }
+                              </span>;
+                          })
+                        }
                       </>
                     );
                   })
@@ -147,8 +155,8 @@ const Note =({ ...obj }: INoteProp) => {
         </Typography>
         <Box sx={{ display: 'flex', gap: '5px', minHeight: '22px' }}>
           {
-            tags && tags.map((tag, index) => {
-              return <Typography key={index} className="tag" sx={{
+            tags && tags.map((tag) => {
+              return <Typography key={tag} className="tag" sx={{
                 ...font('300', '14px', '21px', '0.05em', '#1B18B4','inherit'),
                 cursor: `${id === editedNoteId}`? 'pointer' : 'grab',
               }}
