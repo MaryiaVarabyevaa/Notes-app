@@ -176,7 +176,7 @@ const NotesList = () => {
     e.preventDefault();
     const elem = e.target as HTMLElement;
     const container = elem.querySelector('.container');
-    if (container === elem || elem.closest('.container')) {
+    if (container && container === elem || elem.closest('.container')) {
       const { pageY, pageX } = e;
       elem.style.cursor = 'grab';
       clearTimeout(timer);
@@ -189,16 +189,11 @@ const NotesList = () => {
       clearTimeout(timer);
       setHint(initialHint);
     }
-
   };
 
   useEffect(() => {
-    const box = document.body.querySelector('.box');
-    if (box && width > 360) {
-      box.addEventListener('mousemove', handlerMouseMove);
-
-      return () => box.removeEventListener('mousemove', handlerMouseMove);
-    }
+    document.body.addEventListener('mousemove', handlerMouseMove)
+    return () => document.body.removeEventListener('mousemove', handlerMouseMove);
   }, []);
 
   return (

@@ -30,7 +30,7 @@ const Note =({ ...obj }: INoteProp) => {
     }
   }, [editedItem]);
 
-  const handleDeleteTag = async (tagValue: string) => {
+  const handleDeleteTag = async (tagValue: string): Promise<void> => {
     if (id === editedNoteId) {
       const newText = editText(text, tagValue);
       const newTags = tags.filter((tag) => tag !== tagValue);
