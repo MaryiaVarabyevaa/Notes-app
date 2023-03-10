@@ -192,7 +192,7 @@ const NotesList = () => {
   };
 
   useEffect(() => {
-    document.body.addEventListener('mousemove', handlerMouseMove)
+    document.body.addEventListener('mousemove', handlerMouseMove);
     return () => document.body.removeEventListener('mousemove', handlerMouseMove);
   }, []);
 

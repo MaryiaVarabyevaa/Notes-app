@@ -1,4 +1,12 @@
-import { INote, INoteAction, INoteState, NoteActionTypes } from '../types/note';
+import {
+  IAddNoteAction,
+  INote,
+  INoteAction,
+  INoteState, IRestoreFromStorageAction,
+  ISetEditedNoteIdAction,
+  ISetNotesAction, IUpdateNoteAction, IUpdateNotesAction,
+  NoteActionTypes,
+} from '../types/note';
 import { cloneArray } from '../helpers/cloneArray';
 
 const defaultState: INoteState = {
@@ -49,42 +57,42 @@ export const noteReducer = (state = defaultState, action: any): INoteState => {
   }
 };
 
-export const addNoteAction = (payload: any): INoteAction => {
+export const addNoteAction = (payload: INote): IAddNoteAction => {
   return {
     type: NoteActionTypes.ADD_NOTE,
     payload: payload,
   };
 };
 
-export const setNotesAction = (payload: INote[]): INoteAction => {
+export const setNotesAction = (payload: INote[]):ISetNotesAction => {
   return {
     type: NoteActionTypes.SET_NOTES,
     payload: payload,
   };
 };
 
-export const setEditedNoteIdAction = (payload: any): INoteAction => {
+export const setEditedNoteIdAction = (payload: number): ISetEditedNoteIdAction => {
   return {
     type: NoteActionTypes.SET_EDITED_NOTE_ID,
     payload: payload,
   };
 };
 
-export const updateNotesAction = (payload: INote[]): INoteAction => {
+export const updateNotesAction = (payload: INote[]): IUpdateNotesAction => {
   return {
     type: NoteActionTypes.UPDATE_NOTES_LIST,
     payload: payload,
   };
 };
 
-export const updateNoteAction = (payload: any): INoteAction => {
+export const updateNoteAction = (payload: INote): IUpdateNoteAction => {
   return {
     type: NoteActionTypes.UPDATE_NOTE,
     payload: payload,
   };
 };
 
-export const restoreFromStorageAction = () => {
+export const restoreFromStorageAction = (): IRestoreFromStorageAction => {
   return {
     type: NoteActionTypes.RESTORE_FROM_STORAGE,
   };

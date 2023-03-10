@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
+import {restoreFromStorageAction, setEditedNoteIdAction, setNotesAction, updateNotesAction} from "../store/noteReducer";
 
 export interface INoteCreate {
     queueNumber: number;
@@ -13,14 +14,6 @@ export interface INote extends INoteCreate{
     tags: string[];
 }
 
-export interface INoteComponent extends INote {
-    editedItem: HTMLElement | null;
-    headerValue: string;
-    contextMenuShown: boolean;
-    setHeaderValue: Dispatch<SetStateAction<string>>;
-    textValue: string;
-    setTextValue: Dispatch<SetStateAction<string>>;
-}
 
 export interface INoteState {
     notes: INote[];
@@ -50,6 +43,30 @@ export interface INoteAction {
 export interface IAddNoteAction {
     type: NoteActionTypes.ADD_NOTE;
     payload: INote;
+}
+
+export interface ISetNotesAction {
+    type: NoteActionTypes.SET_NOTES;
+    payload: INote[];
+}
+
+export interface ISetEditedNoteIdAction {
+    type: NoteActionTypes.SET_EDITED_NOTE_ID;
+    payload: number;
+}
+
+export interface IUpdateNotesAction {
+    type: NoteActionTypes.UPDATE_NOTES_LIST;
+    payload: INote[];
+}
+
+export interface IUpdateNoteAction {
+    type: NoteActionTypes.UPDATE_NOTE;
+    payload: INote;
+}
+
+export interface IRestoreFromStorageAction {
+    type: NoteActionTypes.RESTORE_FROM_STORAGE;
 }
 
 export interface IRootState {
