@@ -71,7 +71,7 @@ export const setNotesAction = (payload: INote[]):ISetNotesAction => {
   };
 };
 
-export const setEditedNoteIdAction = (payload: number): ISetEditedNoteIdAction => {
+export const setEditedNoteIdAction = (payload: number | null): ISetEditedNoteIdAction => {
   return {
     type: NoteActionTypes.SET_EDITED_NOTE_ID,
     payload: payload,

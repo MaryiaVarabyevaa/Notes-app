@@ -1,4 +1,4 @@
-import { ITagAction, ITagState, TagActionTypes } from '../types/tag';
+import { ISetCurrentTagAction, ISetTagsAction, ITagAction, ITagState, TagActionTypes } from '../types/tag';
 
 
 const defaultState: ITagState = {
@@ -8,9 +8,9 @@ const defaultState: ITagState = {
 
 export const tagsReducer = (state = defaultState, action: any): ITagState => {
   switch (action.type) {
-  case TagActionTypes.ADD_TAG:
-    localStorage.setItem('tags', JSON.stringify([...state.tags, action.payload]));
-    return { ...state, tags: [...state.tags, action.payload] };
+  // case TagActionTypes.ADD_TAG:
+  //   localStorage.setItem('tags', JSON.stringify([...state.tags, action.payload]));
+  //   return { ...state, tags: [...state.tags, action.payload] };
   case TagActionTypes.SET_TAGS:
     localStorage.setItem('tags', JSON.stringify([action.payload]));
     return { ...state, tags: action.payload };
@@ -25,21 +25,14 @@ export const tagsReducer = (state = defaultState, action: any): ITagState => {
   }
 };
 
-export const addTagAction = (payload: string): ITagAction => {
-  return {
-    type: TagActionTypes.ADD_TAG,
-    payload: payload,
-  };
-};
-
-export const setTagsAction = (payload: any): ITagAction => {
+export const setTagsAction = (payload: string[]): ISetTagsAction => {
   return {
     type: TagActionTypes.SET_TAGS,
     payload: payload,
   };
 };
 
-export const setCurrentTagAction = (payload: string): ITagAction => {
+export const setCurrentTagAction = (payload: string): ISetCurrentTagAction => {
   return {
     type: TagActionTypes.SET_CURRENT_TAG,
     payload: payload,

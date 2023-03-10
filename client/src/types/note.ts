@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import {restoreFromStorageAction, setEditedNoteIdAction, setNotesAction, updateNotesAction} from "../store/noteReducer";
+import { restoreFromStorageAction, setEditedNoteIdAction, setNotesAction, updateNotesAction } from '../store/noteReducer';
 
 export interface INoteCreate {
     queueNumber: number;
@@ -52,7 +52,7 @@ export interface ISetNotesAction {
 
 export interface ISetEditedNoteIdAction {
     type: NoteActionTypes.SET_EDITED_NOTE_ID;
-    payload: number;
+    payload: number | null;
 }
 
 export interface IUpdateNotesAction {
