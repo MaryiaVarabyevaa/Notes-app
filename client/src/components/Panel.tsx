@@ -49,7 +49,7 @@ const Panel = () => {
     getTags().then((tags) => dispatch(setTagsAction(Array.from(tags))));
   } );
 
-  const list = () => (
+  const search = () => (
     <Box
       sx={{
         width: 'auto',
@@ -115,7 +115,7 @@ const Panel = () => {
           boxShadow: '0px -5px 10px rgba(0, 0, 0, 0.25)',
         }}
       >
-        {list()}
+        {search()}
       </Drawer>
     </>
   );
