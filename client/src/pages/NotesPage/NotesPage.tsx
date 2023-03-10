@@ -2,12 +2,13 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Box, Drawer, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getNotes, getUniqueTags } from '../../http/noteAPI';
-import { INote, IRootState } from '../../types/note';
+import { INote } from '../../types/note';
 import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import SearchBar from '../../components/SearchBar';
 import { setNotesAction } from '../../store/noteReducer';
 import { setTagsAction } from '../../store/tagsReducer';
 import { headerLen } from '../../constants/headerLen';
+import { IRootState } from '../../types/rootState';
 import NotesList from './NotesList';
 
 

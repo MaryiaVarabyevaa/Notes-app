@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { size } from '../../helpers/size';
 import { font } from '../../helpers/font';
 import { deleteNote } from '../../http/noteAPI';
-import { IRootState } from '../../types/note';
+import { IRootState } from '../../types/rootState';
 import { cloneArray } from '../../helpers/cloneArray';
 import { updateNotesAction } from '../../store/noteReducer';
 import { IContextMenu } from '../../types/contextMenu';

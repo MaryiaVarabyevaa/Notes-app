@@ -1,7 +1,6 @@
 import React, { useLayoutEffect } from 'react';
 import { Box, Stack, TextField, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { IRootState } from '../../types/note';
 import { font } from '../../helpers/font';
 import { getTextItems } from '../../helpers/getTextItems';
 import { updateTags } from '../../http/noteAPI';
@@ -12,6 +11,7 @@ import { INoteProp } from '../../types/noteProp';
 import { editText } from '../../helpers/editText';
 import { splitTag } from '../../helpers/splitTag';
 import { HASH } from '../../constants/tags';
+import { IRootState } from '../../types/rootState';
 
 
 

@@ -68,8 +68,8 @@ export interface IUpdateNoteAction {
 export interface IRestoreFromStorageAction {
     type: NoteActionTypes.RESTORE_FROM_STORAGE;
 }
-
-export interface IRootState {
-    tagsReducer: any;
-    noteReducer: any;
-}
+//
+// export interface IRootState {
+//     tagsReducer: any;
+//     noteReducer: any;
+// }

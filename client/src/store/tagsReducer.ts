@@ -1,4 +1,4 @@
-import { ISetCurrentTagAction, ISetTagsAction, ITagAction, ITagState, TagActionTypes } from '../types/tag';
+import { ISetCurrentTagAction, ISetTagsAction, ITagState, TagActionTypes } from '../types/tag';
 
 
 const defaultState: ITagState = {

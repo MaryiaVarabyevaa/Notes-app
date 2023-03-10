@@ -3,7 +3,7 @@ import { Box, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateNoteInfo, updateQueueNumber } from '../../http/noteAPI';
-import { INote, IRootState } from '../../types/note';
+import { INote } from '../../types/note';
 import { flex } from '../../helpers/flex';
 import { getDate } from '../../helpers/getDate';
 import { getTags } from '../../helpers/getTags';
@@ -14,6 +14,7 @@ import { addNewNote } from '../../helpers/addNewNote';
 import { IInitialContextMenu } from '../../types/contextMenu';
 import { initialHint } from '../../constants/initialHint';
 import { initialContextMenu } from '../../constants/initialContextMenu';
+import { IRootState } from '../../types/rootState';
 import Note from './Note';
 import ContextMenu from './ContextMenu';
 import Hint from './Hint';
@@ -46,7 +47,6 @@ const NotesList = () => {
   };
 
   const updateNote = async (newColor?: string): Promise<void> => {
-    console.log(textValue);
     if (editedNoteId) {
       const { index, copiedNotes } = cloneArray(notes, editedNoteId);
       const newNote: INote = {

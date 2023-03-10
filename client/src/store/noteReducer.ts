@@ -1,7 +1,6 @@
 import {
   IAddNoteAction,
   INote,
-  INoteAction,
   INoteState, IRestoreFromStorageAction,
   ISetEditedNoteIdAction,
   ISetNotesAction, IUpdateNoteAction, IUpdateNotesAction,

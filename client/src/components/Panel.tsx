@@ -10,7 +10,7 @@ import { MAIN_ROUTE, NOTES_ROUTE } from '../constants/routes';
 import { size } from '../helpers/size';
 import { flex } from '../helpers/flex';
 import { getUniqueTags } from '../http/noteAPI';
-import { IRootState } from '../types/note';
+import { IRootState } from '../types/rootState';
 import { setCurrentTagAction, setTagsAction } from '../store/tagsReducer';
 import { addNoteAction } from '../store/noteReducer';
 import { addNewNote } from '../helpers/addNewNote';

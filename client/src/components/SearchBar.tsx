@@ -4,7 +4,7 @@ import { Autocomplete, InputAdornment, TextField, Typography } from '@mui/materi
 import SearchIcon from '@mui/icons-material/Search';
 import { useDispatch, useSelector } from 'react-redux';
 import { font } from '../helpers/font';
-import { IRootState } from '../types/note';
+import { IRootState } from '../types/rootState';
 import { setCurrentTagAction } from '../store/tagsReducer';
 import { ISearchBarProp } from '../types/searchBarProp';
 
