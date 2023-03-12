@@ -10,7 +10,7 @@ import { UpdateTagsDto } from './dto/update-tags.dto';
 export class NotesService {
   constructor(@InjectModel(Notes) private noteRepository: typeof Notes) {}
 
-  async create(noteDto: CreateNoteDto): Promise<any> {
+  async create(noteDto: CreateNoteDto): Promise<Notes> {
     const note = await this.noteRepository.create(noteDto);
     return note;
   }
@@ -74,7 +74,7 @@ export class NotesService {
     });
     return !!deletedNote;
   }
-  async getTags() {
+  async getTags(): Promise<string[]> {
     const tags = await this.noteRepository.findAll({
       attributes: ['tags'],
     });
@@ -85,7 +85,7 @@ export class NotesService {
         .map(({ tags }) => tags)
         .reduce((a, b) => a.concat(b))
         .map((tag) => set.add(tag));
-      return Array.from(set);
+      return Array.from(set) as string[];
     } else {
       throw new HttpException(
         {

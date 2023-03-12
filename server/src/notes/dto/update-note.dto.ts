@@ -1,4 +1,10 @@
-import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Matches,
+} from 'class-validator';
 
 export class UpdateNoteDto {
   @IsNotEmpty({
@@ -37,6 +43,10 @@ export class UpdateNoteDto {
   @IsString({
     each: true,
     message: 'Each element of tags field must be a string',
+  })
+  @Matches(/^[a-zA-Z0-9#_-]+$/, {
+    each: true,
+    message: 'Tags field contain invalid value',
   })
   readonly tags: string[];
 

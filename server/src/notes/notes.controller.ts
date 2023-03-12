@@ -25,7 +25,7 @@ export class NotesController {
   }
 
   @Get('tags')
-  getTags() {
+  getTags(): Promise<string[]> {
     return this.notesService.getTags();
   }
 
